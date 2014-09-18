@@ -1,0 +1,169 @@
+<head>
+    <title>Tic-Tacs & Altoids; a curiously strong game.</title>
+    <style>
+        body {
+            background-image: url("/images/bg_d0.png");
+            background-color: rgb(60,60,60);
+        }
+
+        .full-center {
+            position: relative;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        .board-container {
+            margin: auto;
+        }
+
+        #outer-board-container {
+            position: relative;
+            width: 90vh;
+            height: 90vh;
+            margin-top: 4vh;
+            margin-bottom: 4vh;
+        }
+
+        .inner-board-container {
+            width: 170px;
+        }
+
+        .board-element {
+            float: left;
+        }
+
+        .outer-board-element {
+            width: 29vh;
+            height: 29vh;
+            margin: 0;
+            border-width: 2px;
+            border-style: solid;
+            border-color: rgb(40, 40, 40);
+        }
+
+        .inner-board-element {
+            width: 55px;
+            height: 55px;
+            margin: 0;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(0,187,221);
+        }
+        
+        .E0 {
+            border-top: none;
+            border-left: none;
+        }
+
+        .E1 {
+            border-top: none;
+        }
+
+        .E2 {
+            border-top: none;
+            border-right: none;
+        }
+
+        .E3 {
+            border-left: none;
+        }
+
+        .E4 {
+            
+        }
+
+        .E5 {
+            border-right: none;
+        }
+
+        .E6 {
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .E7 {
+            border-bottom: none;
+        }
+
+        .E8 {
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    {{> game_grid}}
+</body>
+
+<template name="game_grid">
+    {{#with game_data}}
+        <div id="outer-board-container" class="board-container">
+            <div class="row-0">
+                <div id="0P" class="E0 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[0]}}
+                </div>
+                <div id="1P" class="E1 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[1]}}
+                </div>
+                <div id="2P" class="E2 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[2]}}
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="row-1">
+                <div id="3P" class="E3 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[3]}}
+                </div>
+                <div id="4P" class="E4 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[4]}}
+                </div>
+                <div id="5P" class="E5 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[5]}}
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="row-2">
+                <div id="6P" class="E6 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[6]}}
+                </div>
+                <div id="7P" class="E7 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[7]}}
+                </div>
+                <div id="8P" class="E8 board-element outer-board-element">
+                    {{> inner_game_grid outer_board.[8]}}
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    {{/with}}
+</template>
+
+<template name="inner_game_grid">
+    <div id="inner-board-container-{{index}}" class="board-container inner-board-container full-center">
+        <div class="row-0">
+            <div id="{{index}}0" class="E0 board-element inner-board-element">{{inner_board.[0]}}</div>
+            <div id="{{index}}1" class="E1 board-element inner-board-element">{{inner_board.[1]}}</div>
+            <div id="{{index}}2" class="E2 board-element inner-board-element">{{inner_board.[2]}}</div>
+            <div class="clear"></div>
+        </div>
+        <div class="row-1">
+            <div id="{{index}}3" class="E3 board-element inner-board-element">{{inner_board.[3]}}</div>
+            <div id="{{index}}4" class="E4 board-element inner-board-element">{{inner_board.[4]}}</div>
+            <div id="{{index}}5" class="E5 board-element inner-board-element">{{inner_board.[5]}}</div>
+            <div class="clear"></div>
+        </div>
+        <div class="row-2">
+            <div id="{{index}}6" class="E6 board-element inner-board-element">{{inner_board.[6]}}</div>
+            <div id="{{index}}7" class="E7 board-element inner-board-element">{{inner_board.[7]}}</div>
+            <div id="{{index}}8" class="E8 board-element inner-board-element">{{inner_board.[8]}}</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</template>

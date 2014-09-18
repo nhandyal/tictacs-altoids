@@ -1,23 +1,55 @@
-if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault("counter", 0);
+Template.game_grid.game_data = function() {
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get("counter");
-    }
-  });
+    var return_object = {
+        outer_board : [
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 0
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 1
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 2
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 3
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 4
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 5
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 6
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 7
+            },
+            {
+                inner_board : ['-','-','-','-','-','-','-','-','-'],
+                won : '-',
+                index : 8
+            }
+        ]
+    };
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set("counter", Session.get("counter") + 1);
-    }
-  });
-}
+    return return_object;
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
-}
+};

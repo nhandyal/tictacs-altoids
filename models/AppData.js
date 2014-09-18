@@ -1,0 +1,1 @@
+AppData = new Meteor.Collection("AppData");
