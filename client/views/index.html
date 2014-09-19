@@ -1,16 +1,16 @@
 <head>
     <title>Tic-Tacs & Altoids; a curiously strong game.</title>
     <style>
-        body {
-            background-color: white;
-        }
-
         .full-center {
             position: relative;
             top: 50%;
             -webkit-transform: translateY(-50%);
             -ms-transform: translateY(-50%);
             transform: translateY(-50%);
+        }
+
+        .float-left {
+            float: left;
         }
 
         .board-container {
@@ -30,10 +30,6 @@
             height: 23vh;
         }
 
-        .float-left {
-            float: left;
-        }
-
         .parent-game-element {
             width: 29vh;
             height: 29vh;
@@ -43,6 +39,12 @@
             border-color: rgb(240, 240, 240);
             border-color: -webkit-linear-gradient(top, rgb(240, 239, 239), rgb(200, 199, 199) 50.0%, rgb(240, 239, 239) );
             border:none;
+        }
+
+        .child-game-element {
+            width: 7vh;
+            height: 7vh;
+            margin: 0;
         }
 
         .parent-vertical-spacer {
@@ -67,12 +69,6 @@
             width: 100%;
             height: 4px;
             background: rgb(230, 230, 230);
-        }
-
-        .child-game-element {
-            width: 7vh;
-            height: 7vh;
-            margin: 0;
         }
 
         .XP {
