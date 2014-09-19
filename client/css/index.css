@@ -1,0 +1,117 @@
+.full-center {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.float-left {
+    float: left;
+}
+
+.full-opacity {
+    opacity: 1 !important;
+}
+
+.board-container {
+    margin: auto;
+}
+
+.parent-game-board-container {
+    position: relative;
+    width: 90vh;
+    height: 90vh;
+    margin-top: 4vh;
+    margin-bottom: 4vh;
+}
+
+.child-game-board-container {
+    width: 23vh;
+    height: 23vh;
+}
+
+.parent-game-element {
+    position: relative;
+    width: 29vh;
+    height: 29vh;
+    margin: 0;
+}
+
+.XO-container {
+    position: absolute;
+    z-index: -10;
+    opacity: 0;
+
+    -webkit-transition: 2s;
+    -webkit-transform-style: preserve-3d;
+    
+
+    -moz-transition: 2s;
+    -moz-transform-style: preserve-3d;
+
+    transition: 2s;
+    transform-style: preserve-3d;
+}
+
+.child-game-element {
+    width: 7vh;
+    height: 7vh;
+    margin: 0;
+}
+
+.parent-vertical-spacer {
+    width: 6px;
+    height: 29vh;
+    background: rgb(220, 220, 220);
+}
+
+.parent-horizontal-spacer {
+    width: 100%;
+    height: 6px;
+    background: rgb(220, 220, 220);
+}
+
+.child-vertical-spacer {
+    width: 4px;
+    height: 7vh;
+    background: rgb(230, 230, 230);
+}
+
+.child-horizontal-spacer {
+    width: 100%;
+    height: 4px;
+    background: rgb(230, 230, 230);
+}
+
+.XP {
+    background: url("/images/XP.svg");
+    background-size: 25vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.OP {
+    background: url("/images/OP.svg");
+    background-size: 25vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.XC {
+    background: url("/images/XC.svg");
+    background-size: 5vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.OC {
+    background: url("/images/OC.svg");
+    background-size: 5vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.clear {
+    clear: both;
+}
