@@ -2,10 +2,6 @@
     <title>Tic-Tacs & Altoids; a curiously strong game.</title>
     <style>
         body {
-            /*
-            background-image: url("/images/bg_d0.png");
-            background-color: rgb(60,60,60);
-             */
             background-color: white;
         }
 
@@ -21,7 +17,7 @@
             margin: auto;
         }
 
-        #outer-board-container {
+        .parent-game-board-container {
             position: relative;
             width: 90vh;
             height: 90vh;
@@ -29,7 +25,7 @@
             margin-bottom: 4vh;
         }
 
-        .inner-board-container {
+        .child-game-board-container {
             width: 23vh;
             height: 23vh;
         }
@@ -38,7 +34,7 @@
             float: left;
         }
 
-        .outer-board-element {
+        .parent-game-element {
             width: 29vh;
             height: 29vh;
             margin: 0;
@@ -49,93 +45,62 @@
             border:none;
         }
 
-        .outer-spacer {
+        .parent-vertical-spacer {
+            width: 6px;
+            height: 29vh;
             background: rgb(220, 220, 220);
         }
 
-        .vertical-spacer {
-            width: 6px;
-            height: 29vh;
-            /*
-            background-image: -webkit-linear-gradient(left,
-                                    rgb(255, 255, 255), 
-                                    rgb(220, 220, 220) 50.0%,
-                                    rgb(255, 255, 255) );
-            */
-        }
-
-        .horizontal-spacer {
+        .parent-horizontal-spacer {
             width: 100%;
             height: 6px;
-            /*
-            background-image: -webkit-linear-gradient(top,
-                                    rgb(255, 255, 255), 
-                                    rgb(220, 220, 220) 50.0%,
-                                    rgb(255, 255, 255) );
-            */
+            background: rgb(220, 220, 220);
         }
 
-        .inner-board-element {
+        .child-vertical-spacer {
+            width: 4px;
+            height: 7vh;
+            background: rgb(230, 230, 230);
+        }
+
+        .child-horizontal-spacer {
+            width: 100%;
+            height: 4px;
+            background: rgb(230, 230, 230);
+        }
+
+        .child-game-element {
             width: 7vh;
             height: 7vh;
             margin: 0;
-            border-width: 2px;
-            border-style: solid;
-            border-color: rgb(230, 230, 230);
         }
 
-        .X {
-            background: url("/images/X.svg");
+        .XP {
+            background: url("/images/XP.svg");
+            background-size: 25vh;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .OP {
+            background: url("/images/OP.svg");
+            background-size: 25vh;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .XC {
+            background: url("/images/XC.svg");
             background-size: 5vh;
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        .O {
-            background: url("/images/O.svg");
+        .OC {
+            background: url("/images/OC.svg");
             background-size: 5vh;
             background-position: center;
             background-repeat: no-repeat;
-        }
-
-        .E0 {
-            border-top: none;
-            border-left: none;
-        }
-
-        .E1 {
-            border-top: none;
-        }
-
-        .E2 {
-            border-top: none;
-            border-right: none;
-        }
-
-        .E3 {
-            border-left: none;
-        }
-
-        .E4 {
-            
-        }
-
-        .E5 {
-            border-right: none;
-        }
-
-        .E6 {
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .E7 {
-            border-bottom: none;
-        }
-
-        .E8 {
-            border-right: none;
-            border-bottom: none;
         }
 
         .clear {
@@ -145,78 +110,68 @@
 </head>
 
 <body>
-    {{> game_grid}}
+    {{> parent_game_grid}}
 </body>
 
-<template name="game_grid">
+<template name="parent_game_grid">
     {{#with game_data}}
-        <div id="outer-board-container" class="board-container">
-            <div class="row-0">
-                <div id="0P" class="E0 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[0]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="1P" class="E1 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[1]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="2P" class="E2 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[2]}}
-                </div>
+        <div class="board-container parent-game-board-container">
+            <div>
+                <div id="0P" class="XP float-left parent-game-element">{{> child_game_grid parent_board.[0]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="1P" class="OP float-left parent-game-element">{{> child_game_grid parent_board.[1]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="2P" class="float-left parent-game-element">{{> child_game_grid parent_board.[2]}}</div>
                 <div class="clear"></div>
             </div>
-            <div class="outer-spacer horizontal-spacer"></div>
-            <div class="row-1">
-                <div id="3P" class="E3 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[3]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="4P" class="E4 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[4]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="5P" class="E5 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[5]}}
-                </div>
+            <div class="parent-horizontal-spacer"></div>
+            <div>
+                <div id="3P" class="float-left parent-game-element">{{> child_game_grid parent_board.[3]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="4P" class="float-left parent-game-element">{{> child_game_grid parent_board.[4]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="5P" class="float-left parent-game-element">{{> child_game_grid parent_board.[5]}}</div>
                 <div class="clear"></div>
             </div>
-            <div class="outer-spacer horizontal-spacer"></div>
-            <div class="row-2">
-                <div id="6P" class="E6 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[6]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="7P" class="E7 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[7]}}
-                </div>
-                <div class="outer-spacer vertical-spacer float-left"></div>
-                <div id="8P" class="E8 float-left outer-board-element">
-                    {{> inner_game_grid outer_board.[8]}}
-                </div>
+            <div class="parent-horizontal-spacer"></div>
+            <div>
+                <div id="6P" class="float-left parent-game-element">{{> child_game_grid parent_board.[6]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="7P" class="float-left parent-game-element">{{> child_game_grid parent_board.[7]}}</div>
+                <div class="float-left parent-vertical-spacer"></div>
+                <div id="8P" class="float-left parent-game-element">{{> child_game_grid parent_board.[8]}}</div>
                 <div class="clear"></div>
             </div>
         </div>
     {{/with}}
 </template>
 
-<template name="inner_game_grid">
-    <div id="inner-board-container-{{index}}" class="board-container inner-board-container full-center">
-        <div class="row-0">
-            <div id="{{index}}0" class="X E0 float-left inner-board-element">{{inner_board.[0]}}</div>
-            <div id="{{index}}1" class="O E1 float-left inner-board-element">{{inner_board.[1]}}</div>
-            <div id="{{index}}2" class="E2 float-left inner-board-element">{{inner_board.[2]}}</div>
+<template name="child_game_grid">
+    <div class="board-container child-game-board-container full-center">
+        <div>
+            <div id="{{index}}0" class="XC float-left child-game-element">{{child_board.[0]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}1" class="OC float-left child-game-element">{{child_board.[1]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}2" class="float-left child-game-element">{{child_board.[2]}}</div>
             <div class="clear"></div>
         </div>
-        <div class="row-1">
-            <div id="{{index}}3" class="E3 float-left inner-board-element">{{inner_board.[3]}}</div>
-            <div id="{{index}}4" class="E4 float-left inner-board-element">{{inner_board.[4]}}</div>
-            <div id="{{index}}5" class="E5 float-left inner-board-element">{{inner_board.[5]}}</div>
+        <div class="child-horizontal-spacer"></div>
+        <div>
+            <div id="{{index}}3" class="float-left child-game-element">{{child_board.[3]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}4" class="float-left child-game-element">{{child_board.[4]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}5" class="float-left child-game-element">{{child_board.[5]}}</div>
             <div class="clear"></div>
         </div>
-        <div class="row-2">
-            <div id="{{index}}6" class="E6 float-left inner-board-element">{{inner_board.[6]}}</div>
-            <div id="{{index}}7" class="E7 float-left inner-board-element">{{inner_board.[7]}}</div>
-            <div id="{{index}}8" class="E8 float-left inner-board-element">{{inner_board.[8]}}</div>
+        <div class="child-horizontal-spacer"></div>
+        <div>
+            <div id="{{index}}6" class="float-left child-game-element">{{child_board.[6]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}7" class="float-left child-game-element">{{child_board.[7]}}</div>
+            <div class="float-left child-vertical-spacer"></div>
+            <div id="{{index}}8" class="float-left child-game-element">{{child_board.[8]}}</div>
             <div class="clear"></div>
         </div>
     </div>
