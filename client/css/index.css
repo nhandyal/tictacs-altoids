@@ -1,3 +1,7 @@
+html {
+    overflow: hidden;
+}
+
 .full-center {
     position: relative;
     top: 50%;
@@ -127,6 +131,7 @@
 }
 
 #gameboard-master {
+    position: relative;
     width: 90vh;
     height: 100%;
 }
@@ -146,6 +151,12 @@
     border-bottom: 5px solid #D1A644;
 }
 
-#chat-container {
+#help-container {
+    position: absolute;
+    bottom: 4vh;
+    right: 50px;
+    width: 50px;
+    height: 100px;
+    background: black;
 
 }
