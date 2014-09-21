@@ -1,7 +1,15 @@
 <head>
-    <title>Tic-Tacs & Altoids; a curiously strong game.</title>
+    <title>tictacs & altoids</title>
 </head>
 
 <body>
-    {{> parent_game_grid}}
+    <div id="content-root">
+        <div id="left-sidebar" class="float-left">
+            <div id="logo-container"></div>
+        </div>
+        <div id="gameboard-master" class="float-left">
+            {{> parent_game_grid}}
+        </div>
+        <div class="clear"></div>
+    </div>
 </body>

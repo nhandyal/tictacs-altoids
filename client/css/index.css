@@ -85,28 +85,28 @@
 }
 
 .XP {
-    background: url("/images/XP.svg");
+    background: url("/images/svg/XP.svg");
     background-size: 25vh;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 .OP {
-    background: url("/images/OP.svg");
+    background: url("/images/svg/OP.svg");
     background-size: 25vh;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 .XC {
-    background: url("/images/XC.svg");
+    background: url("/images/svg/XC.svg");
     background-size: 5vh;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 .OC {
-    background: url("/images/OC.svg");
+    background: url("/images/svg/OC.svg");
     background-size: 5vh;
     background-position: center;
     background-repeat: no-repeat;
@@ -114,4 +114,31 @@
 
 .clear {
     clear: both;
+}
+
+#content-root {
+    width: 100vw;
+    height: 100vh;
+}
+
+#left-sidebar {
+    width: calc(100vw - 100vh);
+    height: 100%;
+}
+
+#gameboard-master {
+    width: 90vh;
+    height: 100%;
+}
+
+#logo-container {
+    width: 80%;
+    height: 80px;
+    background: url("/images/svg/tic_tacs_and_altoids.svg");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+    margin-top: 17%;
+    border-bottom: 5px solid #D1A644;
 }
