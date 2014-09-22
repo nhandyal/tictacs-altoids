@@ -24,7 +24,8 @@
  *       game_moves : ["05X", "53O", ...] @Type:String {0-N},
  *       current_turn : <X/O> @Type:Char,
  *       available_inner_spaces : [...] @Type:Int {0-8},
+ *       available_xo_elements : ['X', 'O']
  * }
  */
 
-Games = new Mongo.Collection("games");
+Games = new Meteor.Collection("games");

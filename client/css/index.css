@@ -2,6 +2,10 @@ html {
     overflow: hidden;
 }
 
+body {
+    font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", "Verdana", "sans-serif";
+}
+
 .full-center {
     position: relative;
     top: 50%;
@@ -111,6 +115,20 @@ html {
 
 .OC {
     background: url("/images/svg/OC.svg");
+    background-size: 5vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.preview-X:hover {
+    background: url("/images/svg/X_Preview.svg");
+    background-size: 5vh;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.preview-O:hover {
+    background: url("/images/svg/O_Preview.svg");
     background-size: 5vh;
     background-position: center;
     background-repeat: no-repeat;
