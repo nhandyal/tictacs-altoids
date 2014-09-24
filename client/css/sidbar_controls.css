@@ -1,0 +1,31 @@
+*:focus {
+    outline: 0;
+}
+
+textarea:focus, input:focus {
+    outline: 0;
+}
+
+.game-select-icon {
+    color: #D1A644;
+    opacity: 0.5;
+    border: 0;
+    outline: 0;
+    background: white;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+.game-select-icon:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+#input_username {
+    height: 25px;
+    outline: 0;
+    border: 0;   
+    font-size: 16px;
+    color: #D1A644;
+}

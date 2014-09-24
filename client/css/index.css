@@ -3,7 +3,11 @@ html {
 }
 
 body {
-    font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", "Verdana", "sans-serif";
+    /*font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", "Verdana", "sans-serif";*/
+    font-family: "Copperplate" "Copperplate Gothic Light", "sans-serif";
+    /*font-family: "Verdana", "sans-serif";*/
+    color: rgb(125,125,125);
+    font-size: 16px;
 }
 
 .full-center {
@@ -155,7 +159,8 @@ body {
 }
 
 #sidebar-content-container {
-    width: 65%;
+    width: 85%;
+    max-width: 350px;
     margin: auto;
     margin-top: 15%;
 }

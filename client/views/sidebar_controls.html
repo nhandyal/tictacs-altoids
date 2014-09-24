@@ -1,0 +1,19 @@
+<template name="sidebar_controls">
+    <div id="main-welcome">
+        <form id="create_new_game">
+            Hey
+            {{#if session_username_set}}
+                {{session_username}}
+            {{else}}
+                <input {{username_input_attributes}} />
+            {{/if}} <br/>
+            <div id="game-selection-container">
+                Let's play a
+                <input type="submit" name="public" value="public" id="create-public-game" class="game-select-icon"/>
+                or
+                <input type="submit" name="private" value="private" id="create-private-game" class="game-select-icon"/>
+                game
+            </div>
+        </form>
+    </div>
+</template>
