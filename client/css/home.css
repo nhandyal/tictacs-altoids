@@ -22,6 +22,22 @@
     color: rgb(209,166,68);
 }
 
+.landing-color-alert {
+    color: rgb(204, 40, 40);
+}
+
+.landing-color-alert::-webkit-input-placeholder {
+    color: rgb(204, 40, 40);
+}
+
+.landing-color-alert::-moz-placeholder {
+    color: rgb(204, 40, 40);
+}
+
+.landing-color-alert:-ms-input-placeholder {
+    color: rgb(204, 40, 40);
+}
+
 #master-landing-container {
     width: 900px;
     height: 100px;
