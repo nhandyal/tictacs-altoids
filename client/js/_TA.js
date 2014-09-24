@@ -80,6 +80,11 @@
     };
 
     TA["functions"] = {
+
+        push_window_history : function(state_data, description, path) {
+            window.history.pushState(state_data, description, path);
+        },
+
         rekey_player_data : function(game_data, generic_key, _sguid, xo_element) {
             // this function should never be called with username === undefined
             delete game_data.player_data[generic_key];
@@ -97,7 +102,7 @@
             TA.functions.rekey_player_data(new_game_data, 0, Session.get("_sguid"), 'X');
             
             game_id = Games.insert(new_game_data);
-            window.history.pushState({"game_id" : game_id}, "tictacs & altoids : " + game_id, "/" + game_id);
+            TA.functions.push_window_history({"game_id" : game_id}, "tictacs & altoids : " + game_id, "/" + game_id);
 
             return game_id;
         },

@@ -6,3 +6,4 @@ window.addEventListener('popstate', function(event) {
 */
 
 
+{{login_register_intent}}

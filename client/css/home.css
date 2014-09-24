@@ -1,0 +1,57 @@
+.landing-vertical-spacer {
+    width: 3px;
+    height: 100%;
+    background: rgb(209,166,68);
+    margin: 0 2% 0 2%;
+}
+
+.landing-text-input-element {
+    height: 25px;
+    width: 150px;
+    padding-left: 15px;
+    outline: 0;
+    border: 0;   
+    font-size: 14px;
+    color: #D1A644;
+    border-bottom:2px solid;
+    border-color: rgb(170,170,170);
+}
+
+.landing-login-register-submit:hover {
+    cursor: pointer;
+    color: rgb(209,166,68);
+}
+
+#master-landing-container {
+    width: 900px;
+    height: 100px;
+    margin: auto;
+}
+
+#landing-logo-container {
+    width: 50%;
+}
+
+#landing-logo {
+    position: relative;
+    top: -5px;
+    height: 50px;
+    background: url("/images/svg/tic_tacs_and_altoids.svg");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#landing-login-register-submit {
+    line-height: 25px;
+    margin-top: 5px;
+    text-align: center;
+    background: rgb(230, 230, 230);
+    color: rgb(206, 166, 68);
+}
+
+#landing-login-register-submit:hover {
+    cursor: pointer;
+    background-color: rgb(206, 166, 68);
+    color: white;
+}

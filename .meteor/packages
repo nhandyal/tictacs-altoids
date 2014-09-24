@@ -7,4 +7,5 @@ meteor-platform
 insecure
 autopublish
 iron:router
+accounts-password
 

@@ -17,6 +17,7 @@ if(path != "/") {
 Meteor.startup(function() {
     // is called after templates are rendered
 
+    delete Session.keys['landing_login_register_intent'];
     TA.functions.check_localStorage_for("username");
 
     /*
@@ -28,4 +29,13 @@ Meteor.startup(function() {
         console.log("db game object is undefined");
     }
     */
+});
+
+window.addEventListener('popstate', function(event) {
+    //popstate fired
+    console.log("popstate fired", event);
+    var path = window.location.pathname;
+    if(path == "/") {
+        Session.set('landing_login_register_intent', undefined);
+    }
 });

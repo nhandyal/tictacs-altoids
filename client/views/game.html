@@ -1,0 +1,16 @@
+<template name="game">
+    <div id="content-root">
+        <div id="left-sidebar" class="float-left">
+            <div id="sidebar-content-container">
+                <div id="logo-container"></div>
+                <div id="name">
+                    {{> sidebar_controls}}
+                </div>
+            </div>
+        </div>
+        <div id="gameboard-master" class="float-left">
+            {{> parent_game_grid}}
+        </div>
+        <div class="clear"></div>
+    </div>
+</template>
