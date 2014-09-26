@@ -33,7 +33,12 @@ function processRegisterIntent(email, pwd) {
             return;
         }
 
-        console.log("created successfully");
+        // successfull registration
+        $("#landing-content").css({ opacity: 0 });
+        TA.functions.push_window_history({}, "login", "/"+TA.functions.getCurrentUser());
+        setTimeout(function() {
+            $("#landing-content").fadeTo(250, 1);
+        }, 2000);
     });
 }
 
@@ -63,7 +68,7 @@ function processLoginIntent(email, pwd) {
         $("#landing-content").css({ opacity: 0 });
         TA.functions.push_window_history({}, "login", "/"+TA.functions.getCurrentUser());
         setTimeout(function() {
-            $("#landing-content").fadeTo(500, 1);
+            $("#landing-content").fadeTo(250, 1);
         }, 2000);
     });
 }
