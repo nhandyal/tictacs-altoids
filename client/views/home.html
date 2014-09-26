@@ -1,23 +1,33 @@
 <template name="home">
-    <div id="master-landing-container" class="full-center">
+    <div id="master-landing-container" class="full-center {{#if logged_in}}expanded{{/if}}">
         <div id="landing-logo-container" class="float-left full-center">
             <div id="landing-logo"></div>
         </div>
         <div class="landing-vertical-spacer float-left"></div>
-        <div id="landing-content" class="float-left full-center">
-            {{#if show_login_register_container}}
-                <div id="landing-login-register-container">
-                    <input {{email_input_attributes}} />
-                    <input {{pwd_input_attributes}} />
-                    <div id="landing-login-register-submit">
-                        {{login_register_intent}}
-                    </div>
+        <div id="landing-content" class="float-left {{#if not_logged_in}}full-center{{/if}}">
+            {{#if logged_in}}
+                <div id="landing-dashboard-container">
+                    {{current_user}}
                 </div>
             {{else}}
-                <div id="landing-login-select" class="landing-login-register-submit">Login</div>
-                <div id="landing-register-select" class="landing-login-register-submit">Register</div>
+                {{> home_login_register}}
             {{/if}}
         </div>
         <div class="clear"></div>
     </div>
+</template>
+
+<template name="home_login_register">
+    {{#if show_login_register_container}}
+        <div id="landing-login-register-container">
+            <input {{email_input_attributes}} />
+            <input {{pwd_input_attributes}} />
+            <div id="landing-login-register-submit">
+                {{login_register_intent}}
+            </div>
+        </div>
+    {{else}}
+        <div id="landing-login-select" class="landing-login-register-submit">Login</div>
+        <div id="landing-register-select" class="landing-login-register-submit">Register</div>
+    {{/if}}
 </template>

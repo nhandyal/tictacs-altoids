@@ -7,7 +7,7 @@
  * Description: Client controller code.
  */
 Template.parent_game_grid.game_data = function() {
-    return Games.findOne({_id : Session.get("game_id")});
+    return Games.findOne({_id : "e7QFtyHE7ZrSX3bTX"});
 };
 
 Template.parent_game_grid.helpers({
@@ -20,11 +20,11 @@ Template.parent_game_grid.helpers({
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
             TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(process_xo_elements, 0);
+            setTimeout(TA.functions.process_xo_elements, 0);
             return "XP";
         }else if(xo_element == "O") {
             TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(process_xo_elements, 0);
+            setTimeout(TA.functions.process_xo_elements, 0);
             return "OP";
         }
         
@@ -54,11 +54,11 @@ Template.child_game_grid.helpers({
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
             TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(process_xo_elements, 0);
+            setTimeout(TA.functions.process_xo_elements, 0);
             return "XC";
         }else if(xo_element == "O") {
             TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(process_xo_elements, 0);
+            setTimeout(TA.functions.process_xo_elements, 0);
             return "OC";
         }
         

@@ -127,6 +127,19 @@
             debugger;
             localStorage.setItem(key, value);
             Session.set(key, value);
+        },
+
+        getCurrentUser : function() {
+            var user = Meteor.user(),
+                user_email = "";
+
+            if(user === null || typeof user === "undefined"){
+                return;
+            }
+
+            user_email = user.emails[0].address;
+            user_email = user_email.substring(0, user_email.indexOf('@')).toUpperCase();
+            return user_email;
         }
     };
     

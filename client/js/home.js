@@ -1,7 +1,89 @@
 var email_input_id = "landing-input-email",
-    pwd_input_id = "landing-input-pwd";
+    pwd_input_id = "landing-input-pwd",
+    default_email_placeholder = "email";
+
+
+function processRegisterIntent(email, pwd) {
+    Accounts.createUser({
+        username : chance.guid(),
+        email : email,
+        password : pwd,
+        profile : {}
+    }, function(error) {
+        if(error) {
+            if(error.error == 403) {
+                // duplicate email
+                $("#"+email_input_id).val('');
+                $("#"+pwd_input_id).val('');
+                $("#"+email_input_id).attr("placeholder", "email already in use");
+                (function() {
+                    var toggle_count = 0,
+                        interval = setInterval(function() {
+                            $("#"+email_input_id).toggleClass("landing-color-alert");
+                            toggle_count++;
+                            if(toggle_count == 6) {
+                                clearInterval(interval);
+                                $("#"+email_input_id).attr("placeholder", default_email_placeholder);
+                            }
+                        }, 300);
+                })();
+            }else {
+                // TODO : display default error message
+            }
+            return;
+        }
+
+        console.log("created successfully");
+    });
+}
+
+
+function processLoginIntent(email, pwd) {
+    Meteor.loginWithPassword({email : email}, pwd, function(error) {
+        if(error) {
+            $("#"+email_input_id).val('');
+            $("#"+pwd_input_id).val('');
+            if(error.error == 403){
+                (function() {
+                        var toggle_count = 0,
+                        interval = setInterval(function() {
+                            $("#"+email_input_id).toggleClass("landing-color-alert");
+                            $("#"+pwd_input_id).toggleClass("landing-color-alert");
+                            toggle_count++;
+                            if(toggle_count == 6) {
+                                clearInterval(interval);
+                            }
+                        }, 300);
+                    })();
+            }
+            return;
+        }
+
+        // successfull login
+        $("#landing-content").css({ opacity: 0 });
+        TA.functions.push_window_history({}, "login", "/"+TA.functions.getCurrentUser());
+        setTimeout(function() {
+            $("#landing-content").fadeTo(500, 1);
+        }, 2000);
+    });
+}
 
 Template.home.helpers({
+    logged_in : function() {
+        return Meteor.user() !== null;
+    },
+
+    not_logged_in : function() {
+        return Meteor.user() === null;
+    },
+
+    current_user : function() {
+        return TA.functions.getCurrentUser();
+    }
+});
+
+
+Template.home_login_register.helpers({
     show_login_register_container : function() {
         return typeof Session.get("landing_login_register_intent") !== "undefined";
     },
@@ -11,7 +93,7 @@ Template.home.helpers({
             id : email_input_id,
             class : "landing-text-input-element",
             name : "email",
-            placeholder : "email",
+            placeholder : default_email_placeholder,
             type : "text",
             autofocus : "true",
             autocomplete : "off",
@@ -36,6 +118,7 @@ Template.home.helpers({
         return Session.get("landing_login_register_intent");
     }
 });
+
 
 Template.home.events({
     'click .landing-login-register-submit' : function(e) {
@@ -85,28 +168,16 @@ Template.home.events({
                         }
                     }, 300);
             })();
+            return;
         }
 
         // passed input validation
         if(intent == "register") {
-            Accounts.createUser({
-                username : chance.guid(),
-                email : email,
-                password : pwd,
-                profile : {}
-            }, function(error) {
-                if(error) {
-                    console.log(error);
-                    return;
-                }
-
-                console.log("created successfully");
-            });
-        }else if(intent == "login") {
-            console.log("login");
+            processRegisterIntent(email, pwd);
+        }else if(intent == "login") {            
+            processLoginIntent(email, pwd);
         }else {
             console.log("unknown intent");
         }
-
     }
 });
