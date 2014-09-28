@@ -64,11 +64,11 @@
                 player_data : {
                     0 : {
                         xo_element : '-',
-                        username : ""
+                        email : ""
                     },
                     1 : {
                         xo_element : '-',
-                        username : ""
+                        email : ""
                     }
                 }
             };
@@ -81,35 +81,43 @@
 
     TA["functions"] = {
 
-        push_window_history : function(state_data, description, path) {
-            window.history.pushState(state_data, description, path);
-        },
-
-        rekey_player_data : function(game_data, generic_key, _sguid, xo_element) {
-            // this function should never be called with username === undefined
-            delete game_data.player_data[generic_key];
-            game_data.player_data[_sguid] = {
-                xo_element : xo_element,
-                username : Session.get("username")
-            };
-        },
-
-        create_new_game_and_push_history : function() {            
-            if(typeof Session.get("username") === "undefined") {
-                console.log("Session username undefined. Inconsistent state, logout");
+        ensure_user_login : function() {
+            var user = Meteor.user();
+            if(!user) {
+                debugger;
+                console.log("No logged in user.");
                 TA.functions.logout();
                 return;
             }
 
-            var new_game_data = new TA.data.game_data();
-                game_id = "";
+            return user;
+        },
+
+        push_window_history : function(state_data, description, path) {
+            window.history.pushState(state_data, description, path);
+        },
+
+        rekey_player_data : function(game_data, generic_key, email, xo_element) {
+            var user = TA.functions.ensure_user_login();
+            delete game_data.player_data[generic_key];
+            game_data.player_data[user.username] = {
+                xo_element : xo_element,
+                email : email
+            };
+        },
+
+        create_new_game_and_push_history : function() {            
+            var user = TA.functions.ensure_user_login(),
+                email = user.emails[0].address,
+                new_game_data = new TA.data.game_data(),
+                game_id = "",
+                target_url = "";
 
             // the player to create the game is X, the next player to join is O
-            TA.functions.rekey_player_data(new_game_data, 0, Session.get("username"), 'X');
+            TA.functions.rekey_player_data(new_game_data, 0, email, 'X');
             game_id = Games.insert(new_game_data);
-            TA.functions.push_window_history({"game_id" : game_id}, "tictacs & altoids : " + game_id, "/game/" + game_id);
-
-            return game_id;
+            target_url = "/game/" + game_id;
+            Router.go(target_url);
         },
 
         process_xo_elements : function() {
@@ -129,29 +137,63 @@
         },
 
         set_localStorage : function(key, value) {
-            debugger;
             localStorage.setItem(key, value);
             Session.set(key, value);
         },
 
-        getCurrentUser : function() {
+        get_current_user_email : function() {
             var user = Meteor.user(),
                 user_email = "";
 
-            if(user === null || typeof user === "undefined"){
-                return;
+            if(!user){
+                return null;
             }
 
             user_email = user.emails[0].address;
-            user_email = user_email.substring(0, user_email.indexOf('@')).toUpperCase();
+            user_email = user_email.substring(0, user_email.indexOf('@'));
             return user_email;
+        },
+
+        get_game_by_session : function() {
+            var game_data = Games.findOne({_id : Session.get("game_id")});
+
+            if(!game_data) {
+                console.log("undefined game");
+                Router.go("/");
+                return;
+            }
+
+            return game_data;
         },
 
         logout : function() {
             Meteor.logout();
-            TA.functions.push_window_history({}, "home", "/");
             Session.set("landing_login_register_intent", undefined);
             Session.set("username", undefined);
+            Router.go("/");
+        },
+
+        assert_player_move : function(game_data, targetid, target_xo_element) {
+            // we are making the assumption that the target
+            // doesn't have an element in it. This is being
+            // asserted upstream in the rendering phase. 
+            // Later we will have to refactor to enforce move
+            // validity in this function so we can "prevent"
+            // rogue clients (or more realistically, shitty ui
+            // rendering code).
+
+            var parent_index = Math.floor(targetid / 10),
+                child_index = targetid % 10;
+
+            game_data.parent_board[parent_index].child_board[child_index] = target_xo_element;
+
+            TA.functions._check_win();
+            console.log(game_data);
+            //Games.update({_id : Session.get("game_id")}, game_data);
+        },
+
+        _check_win : function(game_data) {
+            // 
         }
     };
     

@@ -6,7 +6,9 @@
             </div>
         </div>
         <div id="gameboard-master" class="float-left">
-            {{> parent_game_grid}}
+            {{#unless loggingIn}}
+                {{> parent_game_grid}}
+            {{/unless}}
         </div>
         <div class="clear"></div>
     </div>

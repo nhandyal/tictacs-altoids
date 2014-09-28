@@ -7,16 +7,20 @@
  * Description: Client controller code.
  */
 Template.parent_game_grid.game_data = function() {
-    if(typeof Session.get("game_id") === "undefined") {
-        TA.functions.logout();
-        return;
-    }
-    return Games.findOne({_id : Session.get("game_id")});
+    var user = TA.functions.ensure_user_login(),
+        username = user.username,
+        this_player_xo_element = "";
+
+    var game_data = TA.functions.get_game_by_session();
+
+    this_player_xo_element = game_data.player_data[username].xo_element;
+    Session.set("this_player_xo_element", this_player_xo_element);
+
+    return game_data;
 };
 
 Template.parent_game_grid.helpers({
     render_xo_element : function(element_index) {
-
         var index = element_index,
             target_id = '0' + element_index + 'P',
             xo_element = this.parent_board[index].won;
@@ -43,7 +47,7 @@ Template.child_game_grid.helpers({
             xo_element = this.child_board[element_index];
 
         if(xo_element == "-") {
-            return "preview-"+ Session.get("this_player");
+            return "valid-xo-move preview-"+ Session.get("this_player_xo_element");
         }else {
             return "";
         }
@@ -71,7 +75,10 @@ Template.child_game_grid.helpers({
 });
 
 Template.child_game_grid.events({
-    'click .child-game-element' : function(e) {
-        console.log(e.target.id);
+    'click .valid-xo-move' : function(e) {
+        var game_data = TA.functions.get_game_by_session(),
+            xo_element = Session.get("this_player_xo_element");
+        
+        TA.functions.assert_player_move(game_data, e.target.id, xo_element);
     }
 });

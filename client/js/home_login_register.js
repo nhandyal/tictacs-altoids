@@ -84,13 +84,10 @@ function processRegisterIntent(email, pwd) {
             return;
         }
 
-        var username = Meteor.user().username;
-        Session.set("username", username);
-
         // successfull registration
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.getCurrentUser().toLowerCase();
-        TA.functions.push_window_history({}, user, "/"+user);
+        var user = TA.functions.get_current_user_email().toLowerCase();
+        Router.go("/"+user);
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
@@ -122,14 +119,10 @@ function processLoginIntent(email, pwd) {
             return;
         }
 
-        debugger;
-        var username = Meteor.user().username;
-        Session.set("username", username);
-
         // successfull login
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.getCurrentUser().toLowerCase();
-        TA.functions.push_window_history({}, user, "/"+user);
+        var user = TA.functions.get_current_user_email().toLowerCase();
+        Router.go("/"+user);
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
@@ -186,10 +179,10 @@ Template.home_login_register.events({
         var target_id = e.target.id;
         if(target_id == "landing-login-select") {
             Session.set("landing_login_register_intent", "login");
-            TA.functions.push_window_history({}, "login", "/login");
+            Router.go("/login");
         }else if(target_id == "landing-register-select") {
             Session.set("landing_login_register_intent", "register");
-            TA.functions.push_window_history({}, "register", "/register");
+            Router.go("/register");
         }
     },
 

@@ -1,16 +1,19 @@
 <template name="home">
-    <div id="master-landing-container" class="full-center {{#if logged_in}}expanded{{/if}}">
-        <div id="landing-logo-container" class="float-left full-center">
-            <div id="landing-logo"></div>
+    {{#unless loggingin}}
+        {{check_login_redirect}}
+        <div id="master-landing-container" class="full-center {{#if logged_in}}expanded{{/if}}">
+            <div id="landing-logo-container" class="float-left full-center">
+                <div id="landing-logo"></div>
+            </div>
+            <div class="landing-vertical-spacer float-left"></div>
+            <div id="landing-content" class="float-left {{#if not_logged_in}}full-center{{/if}}">
+                {{#if logged_in}}
+                    {{> home_dashboard}}
+                {{else}}
+                    {{> home_login_register}}
+                {{/if}}
+            </div>
+            <div class="clear"></div>
         </div>
-        <div class="landing-vertical-spacer float-left"></div>
-        <div id="landing-content" class="float-left {{#if not_logged_in}}full-center{{/if}}">
-            {{#if logged_in}}
-                {{> home_dashboard}}
-            {{else}}
-                {{> home_login_register}}
-            {{/if}}
-        </div>
-        <div class="clear"></div>
-    </div>
+    {{/unless}}
 </template>
