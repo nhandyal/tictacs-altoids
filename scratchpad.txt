@@ -7,3 +7,7 @@ window.addEventListener('popstate', function(event) {
 
 
 {{login_register_intent}}
+
+
+on login, hide landing-content (via javascript)
+then after 2seconds, animate opacity to 1 (0.5s) and remove class hide

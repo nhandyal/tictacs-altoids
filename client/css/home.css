@@ -38,6 +38,19 @@
     color: rgb(204, 40, 40);
 }
 
+.landing-dashboard-create-game {
+    display: inline-block;
+    width: 48%;
+    line-height: 25px;
+    height: 25px;
+    text-align: center;
+}
+
+.landing-dashboard-create-game:hover {
+    cursor: pointer;
+    color: rgb(209,166,68);
+}
+
 .expanded {
     height: 400px !important;
 }
@@ -84,4 +97,38 @@
     display: inline-block;
     width: 300px;
     height: 400px;
+}
+
+#landing-dashboard-header {
+    line-height: 25px;
+}
+
+#landing-dashboard-logout {
+    width: 25px;
+    height: 25px;
+    background: url("/images/svg/power_icon.svg");
+    background-size: 60% 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#landing-dashboard-logout:hover {
+    cursor: pointer;
+}
+
+#landing-dashboard-user-games {
+    height: 350px;
+}
+
+#landing-dashboard-create-games {
+    height: 25px;
+    line-height: 25px;
+}
+
+#landing-dashboard-create-game-spacer {
+    width: 2px;
+    margin-left: 1%;
+    margin-right: 1%;
+    height: 25px;
+    background: rgb(170, 170, 170);
 }

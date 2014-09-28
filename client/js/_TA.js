@@ -94,15 +94,20 @@
             };
         },
 
-        create_new_game_and_push_history : function() {
+        create_new_game_and_push_history : function() {            
+            if(typeof Session.get("username") === "undefined") {
+                console.log("Session username undefined. Inconsistent state, logout");
+                TA.functions.logout();
+                return;
+            }
+
             var new_game_data = new TA.data.game_data();
                 game_id = "";
 
             // the player to create the game is X, the next player to join is O
-            TA.functions.rekey_player_data(new_game_data, 0, Session.get("_sguid"), 'X');
-            
+            TA.functions.rekey_player_data(new_game_data, 0, Session.get("username"), 'X');
             game_id = Games.insert(new_game_data);
-            TA.functions.push_window_history({"game_id" : game_id}, "tictacs & altoids : " + game_id, "/" + game_id);
+            TA.functions.push_window_history({"game_id" : game_id}, "tictacs & altoids : " + game_id, "/game/" + game_id);
 
             return game_id;
         },
@@ -140,6 +145,13 @@
             user_email = user.emails[0].address;
             user_email = user_email.substring(0, user_email.indexOf('@')).toUpperCase();
             return user_email;
+        },
+
+        logout : function() {
+            Meteor.logout();
+            TA.functions.push_window_history({}, "home", "/");
+            Session.set("landing_login_register_intent", undefined);
+            Session.set("username", undefined);
         }
     };
     

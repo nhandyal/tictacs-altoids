@@ -13,6 +13,17 @@ if(path != "/") {
     Session.set("game_id", path.replace("/", ""));
 }
 
+Template.registerHelper('current_user', function() {
+    return TA.functions.getCurrentUser();
+});
+
+Template.registerHelper('logged_in', function() {
+    return Meteor.user() !== null;
+});
+
+Template.registerHelper('not_logged_in', function() {
+    return Meteor.user() === null;
+});
 
 Meteor.startup(function() {
     // is called after templates are rendered

@@ -49,5 +49,12 @@ Router.map(function() {
         template : 'home'
     });
 
-    this.route('game', {path: 'game/:_game_id',});
+    this.route('game', {
+        path: '/game/:_game_id',
+        action : function() {
+            Session.set("game_id", this.params._game_id);
+            this.render();
+        }
+    });
+    
 });

@@ -3,6 +3,56 @@ var email_input_id = "landing-input-email",
     default_email_placeholder = "email";
 
 
+function preprocessRegisterLoginIntent() {
+    var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        email = $.trim($("#"+email_input_id).val()),
+        pwd = $.trim($("#"+pwd_input_id).val()),
+        valid_email = email_regex.test(email),
+        valid_pwd = (pwd != ""),
+        intent = $.trim($("#landing-login-register-submit").html()).toLowerCase();
+
+    if(!valid_email) {
+        // flash the email field 3 times
+        (function() {
+            var toggle_count = 0,
+                interval = setInterval(function() {
+                    $("#"+email_input_id).toggleClass("landing-color-alert");
+                    toggle_count++;
+                    if(toggle_count == 6) {
+                        clearInterval(interval);
+                    }
+                }, 300);
+        })();
+        return;
+    }
+
+    if(!valid_pwd) {
+        // flash the pwd field 3 times
+        $("#"+pwd_input_id).val('');
+        (function() {
+            var toggle_count = 0,
+                interval = setInterval(function() {
+                    $("#"+pwd_input_id).toggleClass("landing-color-alert");
+                    toggle_count++;
+                    if(toggle_count == 6) {
+                        clearInterval(interval);
+                    }
+                }, 300);
+        })();
+        return;
+    }
+
+    // passed input validation
+    if(intent == "register") {
+        processRegisterIntent(email, pwd);
+    }else if(intent == "login") {            
+        processLoginIntent(email, pwd);
+    }else {
+        console.log("unknown intent");
+    }
+};
+
+
 function processRegisterIntent(email, pwd) {
     Accounts.createUser({
         username : chance.guid(),
@@ -30,17 +80,22 @@ function processRegisterIntent(email, pwd) {
             }else {
                 // TODO : display default error message
             }
+
             return;
         }
 
+        var username = Meteor.user().username;
+        Session.set("username", username);
+
         // successfull registration
         $("#landing-content").css({ opacity: 0 });
-        TA.functions.push_window_history({}, "login", "/"+TA.functions.getCurrentUser());
+        var user = TA.functions.getCurrentUser().toLowerCase();
+        TA.functions.push_window_history({}, user, "/"+user);
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
-        }, 2000);
+        }, 1000);
     });
-}
+};
 
 
 function processLoginIntent(email, pwd) {
@@ -50,42 +105,36 @@ function processLoginIntent(email, pwd) {
             $("#"+pwd_input_id).val('');
             if(error.error == 403){
                 (function() {
-                        var toggle_count = 0,
-                        interval = setInterval(function() {
-                            $("#"+email_input_id).toggleClass("landing-color-alert");
-                            $("#"+pwd_input_id).toggleClass("landing-color-alert");
-                            toggle_count++;
-                            if(toggle_count == 6) {
-                                clearInterval(interval);
-                            }
-                        }, 300);
-                    })();
+                    var toggle_count = 0,
+                    interval = setInterval(function() {
+                        $("#"+email_input_id).toggleClass("landing-color-alert");
+                        $("#"+pwd_input_id).toggleClass("landing-color-alert");
+                        toggle_count++;
+                        if(toggle_count == 6) {
+                            clearInterval(interval);
+                        }
+                    }, 300);
+                })();
+            }else {
+                // TODO: display default error message
             }
+
             return;
         }
 
+        debugger;
+        var username = Meteor.user().username;
+        Session.set("username", username);
+
         // successfull login
         $("#landing-content").css({ opacity: 0 });
-        TA.functions.push_window_history({}, "login", "/"+TA.functions.getCurrentUser());
+        var user = TA.functions.getCurrentUser().toLowerCase();
+        TA.functions.push_window_history({}, user, "/"+user);
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
-        }, 2000);
+        }, 1000);
     });
-}
-
-Template.home.helpers({
-    logged_in : function() {
-        return Meteor.user() !== null;
-    },
-
-    not_logged_in : function() {
-        return Meteor.user() === null;
-    },
-
-    current_user : function() {
-        return TA.functions.getCurrentUser();
-    }
-});
+};
 
 
 Template.home_login_register.helpers({
@@ -125,7 +174,14 @@ Template.home_login_register.helpers({
 });
 
 
-Template.home.events({
+Template.home_login_register.events({
+
+    'keyup #landing-login-register-container' : function(e) {
+        if(e.keyCode == 13) {
+            preprocessRegisterLoginIntent();
+        }
+    },
+
     'click .landing-login-register-submit' : function(e) {
         var target_id = e.target.id;
         if(target_id == "landing-login-select") {
@@ -138,51 +194,7 @@ Template.home.events({
     },
 
     'click #landing-login-register-submit' : function(e) {
-        var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            email = $.trim($("#"+email_input_id).val()),
-            pwd = $.trim($("#"+pwd_input_id).val()),
-            valid_email = email_regex.test(email),
-            valid_pwd = (pwd != ""),
-            intent = $.trim($("#landing-login-register-submit").html()).toLowerCase();
-
-        if(!valid_email) {
-            // flash the email field 3 times
-            (function() {
-                var toggle_count = 0,
-                    interval = setInterval(function() {
-                        $("#"+email_input_id).toggleClass("landing-color-alert");
-                        toggle_count++;
-                        if(toggle_count == 6) {
-                            clearInterval(interval);
-                        }
-                    }, 300);
-            })();
-            return;
-        }
-
-        if(!valid_pwd) {
-            // flash the pwd field 3 times
-            $("#"+pwd_input_id).val('');
-            (function() {
-                var toggle_count = 0,
-                    interval = setInterval(function() {
-                        $("#"+pwd_input_id).toggleClass("landing-color-alert");
-                        toggle_count++;
-                        if(toggle_count == 6) {
-                            clearInterval(interval);
-                        }
-                    }, 300);
-            })();
-            return;
-        }
-
-        // passed input validation
-        if(intent == "register") {
-            processRegisterIntent(email, pwd);
-        }else if(intent == "login") {            
-            processLoginIntent(email, pwd);
-        }else {
-            console.log("unknown intent");
-        }
+        preprocessRegisterLoginIntent();
     }
+    
 });

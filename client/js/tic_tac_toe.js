@@ -7,7 +7,11 @@
  * Description: Client controller code.
  */
 Template.parent_game_grid.game_data = function() {
-    return Games.findOne({_id : "e7QFtyHE7ZrSX3bTX"});
+    if(typeof Session.get("game_id") === "undefined") {
+        TA.functions.logout();
+        return;
+    }
+    return Games.findOne({_id : Session.get("game_id")});
 };
 
 Template.parent_game_grid.helpers({

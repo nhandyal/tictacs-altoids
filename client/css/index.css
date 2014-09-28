@@ -24,6 +24,10 @@ body {
     float: left;
 }
 
+.float-right {
+    float: right;
+}
+
 .full-opacity {
     opacity: 1 !important;
 }
