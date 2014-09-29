@@ -182,18 +182,96 @@
             // rogue clients (or more realistically, shitty ui
             // rendering code).
 
-            var parent_index = Math.floor(targetid / 10),
-                child_index = targetid % 10;
+            var targetid_int = parseInt(targetid.replace("C", "")),
+                parent_index = Math.floor(targetid_int / 10),
+                child_index = targetid_int % 10,
+                target_xo_element = target_xo_element.toUpperCase();
 
             game_data.parent_board[parent_index].child_board[child_index] = target_xo_element;
+            $("#"+targetid).removeClass("preview-"+target_xo_element).removeClass("valid-move");
 
-            TA.functions._check_win();
+
+            var game_win = TA.functions._check_win(game_data);
+            if(game_win) {
+                alert(game_win + "Won the game");
+            }
             console.log(game_data);
-            //Games.update({_id : Session.get("game_id")}, game_data);
+            Games.update({_id : Session.get("game_id")}, game_data);
         },
 
         _check_win : function(game_data) {
-            // 
+            
+            // brute force check child boards
+            for(var i = 0; i < 9; i++) {
+                var child_board = game_data.parent_board[i].child_board;
+                if(child_board.won == "X" || child_board.won == "O") {
+                    continue;
+                }
+
+                var v0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[3], child_board[6]),
+                    v1 = TA.functions._compare_three_xo_elements(child_board[1], child_board[4], child_board[7]),
+                    v2 = TA.functions._compare_three_xo_elements(child_board[2], child_board[5], child_board[8]),
+                    h0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[1], child_board[2]),
+                    h1 = TA.functions._compare_three_xo_elements(child_board[3], child_board[4], child_board[5]),
+                    h2 = TA.functions._compare_three_xo_elements(child_board[6], child_board[7], child_board[8]),
+                    d0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[4], child_board[8]),
+                    d1 = TA.functions._compare_three_xo_elements(child_board[2], child_board[4], child_board[6]),
+                    board_win = v0+v1+v2+h0+h1+h2+d0+d1;
+
+                if(board_win == 1) {
+                    var winning_xo_element = "";
+                    if(v1 || h1 || d0 || d1) {
+                        winning_xo_element = child_board[4];
+                    }else if(v0 || h0) {
+                        winning_xo_element = child_board[0];
+                    }else if(v2 || h2) {
+                        winning_xo_element = child_board[8];
+                    }else {
+                        console.log("unknown board_win == 1");
+                        continue;
+                    }
+
+                    game_data.parent_board[i].won = winning_xo_element.toUpperCase();
+                }else if(board_win > 1) {
+                    console.log("unknown board_win > 1");
+                }
+            }
+
+            // brute force check parent board
+            var v0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[3].won, game_data.parent_board[6].won),
+                v1 = TA.functions._compare_three_xo_elements(game_data.parent_board[1].won, game_data.parent_board[4].won, game_data.parent_board[7].won),
+                v2 = TA.functions._compare_three_xo_elements(game_data.parent_board[2].won, game_data.parent_board[5].won, game_data.parent_board[8].won),
+                h0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[1].won, game_data.parent_board[2].won),
+                h1 = TA.functions._compare_three_xo_elements(game_data.parent_board[3].won, game_data.parent_board[4].won, game_data.parent_board[5].won),
+                h2 = TA.functions._compare_three_xo_elements(game_data.parent_board[6].won, game_data.parent_board[7].won, game_data.parent_board[8].won),
+                d0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[4].won, game_data.parent_board[8].won),
+                d1 = TA.functions._compare_three_xo_elements(game_data.parent_board[2].won, game_data.parent_board[4].won, game_data.parent_board[6].won),
+                board_win = v0+v1+v2+h0+h1+h2+d0+d1;
+
+            var winning_xo_element = "";
+            if(board_win == 1) {
+                if(v1 || h1 || d0 || d1) {
+                    winning_xo_element = game_data.parent_board[4].won;
+                }else if(v0 || h0) {
+                    winning_xo_element = game_data.parent_board[0].won;
+                }else if(v2 || h2) {
+                    winning_xo_element = game_data.parent_board[8].won;
+                }else {
+                    console.log("unknown parent board_win == 1");
+                    return null;
+                }
+            }else if(board_win > 1) {
+                console.log("unknown parent board_win > 1");
+                return null;
+            }
+
+            return winning_xo_element.toUpperCase();
+        },
+
+        _compare_three_xo_elements : function(e1, e2, e3) {
+            var equalsX = e1 == "X" && e2 == "X" && e3 == "X",
+                equalsO = e1 == "O" && e2 == "O" && e3 == "O";
+            return equalsX || equalsO;
         }
     };
     
