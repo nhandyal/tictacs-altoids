@@ -1,11 +1,6 @@
 /*---------------- STARTUP LOGIC ----------------*/
 
 // set the user's sguid if currently unset
-var _sguid = TA.functions.check_localStorage_for("_squid");
-if(typeof _sguid === 'undefined') {
-    TA.functions.set_localStorage("_sguid", chance.guid());
-}
-
 Template.registerHelper('current_user', function() {
     return TA.functions.get_current_user_email();
 });

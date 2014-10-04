@@ -4,6 +4,12 @@
  * Tutorial: http://robertdickert.com/blog/2014/05/08/iron-router-first-steps/
  */
 
+Router.configure({
+    onBeforeAction : function() {
+        TA.functions.reset_game_session_state();
+    }
+});
+
 Router.map(function() {
     
     this.route('home', {

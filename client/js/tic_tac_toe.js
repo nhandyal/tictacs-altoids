@@ -11,10 +11,12 @@ Template.parent_game_grid.game_data = function() {
         username = user.username,
         this_player_xo_element = "";
 
-    var game_data = TA.functions.get_game_by_session();
+    var game_data = TA.functions.get_game_by_session(),
+        this_game_player_data = game_data.player_data;
 
     this_player_xo_element = game_data.player_data[username].xo_element;
     Session.set("this_player_xo_element", this_player_xo_element);
+    Session.set("this_game_player_data", this_game_player_data);
 
     return game_data;
 };

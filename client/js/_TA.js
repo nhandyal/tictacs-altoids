@@ -93,10 +93,6 @@
             return user;
         },
 
-        push_window_history : function(state_data, description, path) {
-            window.history.pushState(state_data, description, path);
-        },
-
         rekey_player_data : function(game_data, generic_key, email, xo_element) {
             var user = TA.functions.ensure_user_login();
             delete game_data.player_data[generic_key];
@@ -171,6 +167,11 @@
             Session.set("landing_login_register_intent", undefined);
             Session.set("username", undefined);
             Router.go("/");
+        },
+
+        reset_game_session_state : function() {
+            Session.set("this_player_xo_element", undefined);
+            Session.set("this_game_player_data", undefined);
         },
 
         assert_player_move : function(game_data, targetid, target_xo_element) {

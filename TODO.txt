@@ -1,0 +1,16 @@
+
+// I think this is solved...
+Figure out a way to get waitOn to work with routes. It's adds bullshit complexity
+in the template logic.
+
+--> Meteor animations seems to be another beast right now. Going to remove the animation
+	code and get the app to work with pure reactive data. Then go back and add animations
+	one by one
+
+force templates to use the data context from a DB document or a route. Don't render
+templates conditionally based on session store. Ideally Session store can be removed
+and all "state" or "data" that needs to be passed around can be run via reactive hooks
+into the db documents.
+
+
+
