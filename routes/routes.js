@@ -5,36 +5,57 @@
  */
 
 Router.configure({
-    onBeforeAction : function() {
-        TA.functions.reset_game_session_state();
+    waitOn : function() {
+        return function() {
+            return ! Meteor.loggingIn();
+        }
     }
 });
 
 Router.map(function() {
     
     this.route('home', {
-        path : '/'
+        path : '/',
+        template : 'home',
+        onBeforeAction : function() {
+            if(Meteor.user()) {
+                return Router.go("/"+TA.functions.get_current_username());
+            }
+        }
     });
 
     this.route('login', {
+        path : '/login',
         template : 'home',
-        action : function() {
+        onBeforeAction : function() {
+            if(Meteor.user()) {
+                return Router.go("/");  // let the home route handle the redirect to /username
+            }
+
             Session.set("landing_login_register_intent", "login");
-            this.render();
         }
     });
 
     this.route('register', {
+        path : 'register',
         template : 'home',
-        action : function() {
+        onBeforeAction : function() {
+            if(Meteor.user()) {
+                return Router.go("/");  // let the home route handle the redirect to /username
+            }
+
             Session.set("landing_login_register_intent", "register");
-            this.render();
         }
     });
     
     this.route('userHome', {
         path : '/:_username',
-        template : 'home'
+        template : 'home',
+        onBeforeAction : function() {
+            if(!Meteor.user()) {
+                return Router.go("/");
+            }
+        }
     });
 
     this.route('game', {

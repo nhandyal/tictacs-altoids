@@ -2,7 +2,7 @@
 
 // set the user's sguid if currently unset
 Template.registerHelper('current_user', function() {
-    return TA.functions.get_current_user_email();
+    return TA.functions.get_current_username();
 });
 
 Template.registerHelper('logged_in', function() {

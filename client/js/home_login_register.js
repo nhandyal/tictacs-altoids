@@ -55,7 +55,6 @@ function preprocessRegisterLoginIntent() {
 
 function processRegisterIntent(email, pwd) {
     Accounts.createUser({
-        username : chance.guid(),
         email : email,
         password : pwd,
         profile : {}
@@ -86,8 +85,7 @@ function processRegisterIntent(email, pwd) {
 
         // successfull registration
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.get_current_user_email().toLowerCase();
-        Router.go("/"+user);
+        Router.go("/");
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
@@ -121,8 +119,7 @@ function processLoginIntent(email, pwd) {
 
         // successfull login
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.get_current_user_email().toLowerCase();
-        Router.go("/"+user);
+        Router.go("/");
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);

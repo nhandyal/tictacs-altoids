@@ -137,7 +137,7 @@
             Session.set(key, value);
         },
 
-        get_current_user_email : function() {
+        get_current_username : function() {
             var user = Meteor.user(),
                 user_email = "";
 
