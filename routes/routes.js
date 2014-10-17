@@ -1,16 +1,22 @@
 /**
  * Iron router
  * Project Home: https://github.com/EventedMind/iron-router
- * Tutorial: http://robertdickert.com/blog/2014/05/08/iron-router-first-steps/
  */
-
 Router.configure({
+    loadingTemplate : "loading",
     waitOn : function() {
         return function() {
             return ! Meteor.loggingIn();
         }
-    }
+    },
+    onBeforeaction : function() {
+        TA.functions.reset_game_session_state();
+    },
+
 });
+
+// https://github.com/EventedMind/iron-router/blob/dev/README.md#controlling-subscriptions 
+Router.onBeforeAction('loading');
 
 Router.map(function() {
     
@@ -59,10 +65,15 @@ Router.map(function() {
     });
 
     this.route('game', {
-        path: '/game/:_game_id',
-        action : function() {
+        path : '/game/:_game_id',
+        template : 'game',
+        waitOn : function() {
+            return [
+                Meteor.subscribe("games"),
+            ]
+        },
+        onBeforeAction : function() {
             Session.set("game_id", this.params._game_id);
-            this.render();
         }
     });
     

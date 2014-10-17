@@ -5,7 +5,7 @@ var email_input_id = "landing-input-email",
 
 function preprocessRegisterLoginIntent() {
     var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        email = $.trim($("#"+email_input_id).val()),
+        email = ($.trim($("#"+email_input_id).val())).toLowerCase(),
         pwd = $.trim($("#"+pwd_input_id).val()),
         valid_email = email_regex.test(email),
         valid_pwd = (pwd != ""),

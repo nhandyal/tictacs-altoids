@@ -16,7 +16,6 @@ Template.registerHelper('not_logged_in', function() {
 Meteor.startup(function() {
     // is called after templates are rendered
     delete Session.keys['landing_login_register_intent'];
-    TA.functions.check_localStorage_for("username");
 });
 
 window.addEventListener('popstate', function(event) {

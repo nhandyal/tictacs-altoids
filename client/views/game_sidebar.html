@@ -1,5 +1,25 @@
 <template name="game_sidebar">
-    <div id="main-welcome">
-        {{{display_game_stats}}}
+    <div id="game-sidebar">
+        {{> game_stats_template}}
+    </div>
+</template>
+
+<template name="game_stats_template">
+    <div id="game-sidebar-game-stats">
+        {{#with game_stats}}
+            <div id="game-state">
+                {{game_state}}
+            </div>
+            <div id="player-data-container">
+                <div class="player-data">
+                    <span class="player-data-element player-email">{{player_data.X.email}}</span>
+                    <span class="player-data-element player-xo-element">: X</span>
+                </div>
+                <div class="player-data">
+                    <span class="player-data-element player-email">{{player_data.O.email}}</span>
+                    <span class="player-data-element player-xo-element">: O</span>
+                </div>
+            </div>
+        {{/with}}
     </div>
 </template>

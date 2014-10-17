@@ -7,16 +7,15 @@
  * Description: Client controller code.
  */
 Template.parent_game_grid.game_data = function() {
-    var user = TA.functions.ensure_user_login(),
+    var user = Meteor.user(),
         username = user.username,
-        this_player_xo_element = "";
+        game_data = TA.functions.get_game_by_session();
 
-    var game_data = TA.functions.get_game_by_session(),
-        this_game_player_data = game_data.player_data;
-
-    this_player_xo_element = game_data.player_data[username].xo_element;
-    Session.set("this_player_xo_element", this_player_xo_element);
-    Session.set("this_game_player_data", this_game_player_data);
+    if(game_data.player_data.X.id == user._id) {
+        Session.set("this_player_xo_element", "X");
+    }else {
+        Session.set("this_player_xo_element", "O");
+    }
 
     return game_data;
 };
@@ -29,16 +28,10 @@ Template.parent_game_grid.helpers({
 
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "XP";
+            return "XP full-opacity";
         }else if(xo_element == "O") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "OP";
-        }
-        
-        return "";
+            return "OP full-opacity";
+        } 
     }
 });
 
@@ -56,23 +49,16 @@ Template.child_game_grid.helpers({
     },
 
     render_xo_element : function(element_index) {
-        
         var parent_index = this.index,
             target_id = parent_index + '' + element_index + 'C',
             xo_element = this.child_board[element_index];
 
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "XC";
+            return "XC full-opacity";
         }else if(xo_element == "O") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "OC";
+            return "OC full-opacity";
         }
-        
-        return "";
     }
 });
 
