@@ -6,15 +6,36 @@
  * Project: TicTacs & Altoids
  * Description: Client controller code.
  */
-Template.parent_game_grid.game_data = function() {
-    var user = Meteor.user(),
-        username = user.username,
-        game_data = TA.functions.get_game_by_session();
+var game_data = null,
+    spectating = true,
+    check_and_assign_opponent = function(user) {
+        if(game_data.player_data.O.id == "" && game_data.player_data.X.id != user._id) {
+            game_data.player_data.O.id = user._id;
+            game_data.player_data.O.email = user.emails[0].address;
+            game_data.state = "active";
 
-    if(game_data.player_data.X.id == user._id) {
-        Session.set("this_player_xo_element", "X");
-    }else {
-        Session.set("this_player_xo_element", "O");
+            Games.update({_id : game_data._id}, game_data);
+        }
+    }
+
+Template.parent_game_grid.game_data = function() {
+    var user = Meteor.user();
+    
+    game_data = TA.functions.get_game_by_session();
+    spectating = true;
+
+    if(user) {
+        spectating = false;
+        
+        // check if this game has an oponent
+        // if it doesn't set this player to be O
+        check_and_assign_opponent(user);
+
+        if(game_data.player_data.X.id == user._id) {
+            Session.set("this_player_xo_element", "X");
+        }else if(game_data.player_data.O.id == user._id) {
+            Session.set("this_player_xo_element", "O");
+        }
     }
 
     return game_data;
@@ -37,6 +58,12 @@ Template.parent_game_grid.helpers({
 
 Template.child_game_grid.helpers({
     preview_xo_element : function(element_index) {
+
+        // prevent playing if game is not in an active state
+        if (game_data.state.toUpperCase() != "ACTIVE" || spectating) {
+            return "";
+        }
+
         var parent_index = this.index,
             target_id = parent_index + '' + element_index + 'C',
             xo_element = this.child_board[element_index];

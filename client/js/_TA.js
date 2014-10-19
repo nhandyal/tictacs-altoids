@@ -80,9 +80,7 @@
             };
 
             return game_board;
-        },
-
-        xo_targets_to_show : []
+        }
     };
 
     TA["functions"] = {
@@ -149,7 +147,6 @@
 
         reset_game_session_state : function() {
             Session.set("this_player_xo_element", undefined);
-            Session.set("this_game_player_data", undefined);
         },
 
         assert_player_move : function(game_data, targetid, target_xo_element) {
