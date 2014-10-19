@@ -15,23 +15,26 @@ Template.game_stats_template.game_stats = function() {
         return null;
     }
 
+    // the get stripped email function modifies the player_data object
+    player_data.X.email = get_stripped_email(player_data, "X");
+    player_data.O.email = get_stripped_email(player_data, "O");
+
     switch(game_state) {
         case "WAITING":
             return_obbject["game_state"] = "Waiting for opponent";
             break;
         case "ACTIVE":
-            return_obbject["game_state"] = "player's turn";
+            var current_player = game_data.current_player.toUpperCase(),
+                player_name = current_player == "X" ? player_data.X.email : player_data.O.email;
+
+            return_obbject["game_state"] = player_name + "'s turn";
             break;
         case "FINISHED":
             return_obbject["game_state"] = "winner";
             break;
     }
 
-    player_data.X.email = get_stripped_email(player_data, "X");
-    player_data.O.email = get_stripped_email(player_data, "O");
-
     return_obbject["player_data"] = player_data;
-    console.log(return_obbject);
 
     return return_obbject;
 }

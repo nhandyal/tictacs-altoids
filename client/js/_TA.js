@@ -13,50 +13,62 @@
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 0
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 1
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 2
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 3
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 4
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 5
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 6
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 7
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 8
                     }
                 ],
+
                 game_moves : [],
+                current_player : "X",
+                active_parent_board : -1,
                 
                 player_data : {
                     X : {
@@ -84,19 +96,6 @@
     };
 
     TA["functions"] = {
-
-        ensure_user_login : function() {
-            var user = Meteor.user();
-            if(!user) {
-                debugger;
-                console.log("No logged in user.");
-                TA.functions.logout();
-                return;
-            }
-
-            return user;
-        },
-
         create_new_game_and_push_history : function() {            
             var user = Meteor.user(),
                 new_game_data = new TA.data.game_data(),
@@ -129,9 +128,7 @@
             var game_data = Games.findOne({_id : Session.get("game_id")});
 
             if(!game_data) {
-                //debugger;
                 console.log("undefined game");
-                //Router.go("/");
                 return {};
             }
 
@@ -143,10 +140,6 @@
             Session.set("landing_login_register_intent", undefined);
             Session.set("username", undefined);
             Router.go("/");
-        },
-
-        reset_game_session_state : function() {
-            Session.set("this_player_xo_element", undefined);
         },
 
         assert_player_move : function(game_data, targetid, target_xo_element) {
@@ -161,15 +154,20 @@
             var targetid_int = parseInt(targetid.replace("C", "")),
                 parent_index = Math.floor(targetid_int / 10),
                 child_index = targetid_int % 10,
-                target_xo_element = target_xo_element.toUpperCase();
+                target_xo_element = target_xo_element.toUpperCase(),
+                next_player = target_xo_element == 'X' ? 'O' : 'X',
+                fated_parent_index = child_index;
 
             game_data.parent_board[parent_index].child_board[child_index] = target_xo_element;
-            $("#"+targetid).removeClass("preview-"+target_xo_element).removeClass("valid-move");
-
+            game_data.parent_board[parent_index].available_spaces = game_data.parent_board[parent_index].available_spaces - 1;
+            game_data.game_moves.push(targetid+target_xo_element);
+            game_data.current_player = next_player;
+            game_data.active_parent_board = game_data.parent_board[fated_parent_index].available_spaces == 0 ? -1 : fated_parent_index;
 
             var game_win = TA.functions._check_win(game_data);
             if(game_win) {
-                //alert(game_win + "Won the game");
+                game_data.state = "finished";
+                alert(game_win + "Won the game");
             }
             console.log(game_data);
             Games.update({_id : Session.get("game_id")}, game_data);

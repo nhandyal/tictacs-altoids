@@ -8,6 +8,7 @@
  */
 var game_data = null,
     spectating = true,
+    this_player_xo_element = "",
     check_and_assign_opponent = function(user) {
         if(game_data.player_data.O.id == "" && game_data.player_data.X.id != user._id) {
             game_data.player_data.O.id = user._id;
@@ -15,6 +16,11 @@ var game_data = null,
             game_data.state = "active";
 
             Games.update({_id : game_data._id}, game_data);
+        }
+    },
+    this_player_turn = function() {
+        if(game_data.current_player.toUpperCase() == this_player_xo_element) {
+            return true;
         }
     }
 
@@ -32,9 +38,9 @@ Template.parent_game_grid.game_data = function() {
         check_and_assign_opponent(user);
 
         if(game_data.player_data.X.id == user._id) {
-            Session.set("this_player_xo_element", "X");
+            this_player_xo_element =  "X"
         }else if(game_data.player_data.O.id == user._id) {
-            Session.set("this_player_xo_element", "O");
+            this_player_xo_element =  "O"
         }
     }
 
@@ -57,19 +63,35 @@ Template.parent_game_grid.helpers({
 });
 
 Template.child_game_grid.helpers({
-    preview_xo_element : function(element_index) {
+    active : function(element_index) {
+        var active_parent_board = game_data.active_parent_board;
 
-        // prevent playing if game is not in an active state
-        if (game_data.state.toUpperCase() != "ACTIVE" || spectating) {
+        if(active_parent_board == element_index) {
+            return "active";
+        }else {
+            return "";
+        }
+    },
+
+    preview_xo_element : function(parent_index, element_index) {
+
+        // prevent playing in invalid situations
+        if (game_data.state.toUpperCase() != "ACTIVE" || spectating || !this_player_turn()) {
             return "";
         }
 
         var parent_index = this.index,
             target_id = parent_index + '' + element_index + 'C',
-            xo_element = this.child_board[element_index];
+            xo_element = this.child_board[element_index],
+            active_parent_board = game_data.active_parent_board;
+
+        // prevent playing if parent board isn't active
+        if(active_parent_board != -1 && active_parent_board != parent_index) {
+            return "";
+        }
 
         if(xo_element == "-") {
-            return "valid-xo-move preview-"+ Session.get("this_player_xo_element");
+            return "valid-xo-move preview-" + this_player_xo_element;
         }else {
             return "";
         }
@@ -91,9 +113,6 @@ Template.child_game_grid.helpers({
 
 Template.child_game_grid.events({
     'click .valid-xo-move' : function(e) {
-        var game_data = TA.functions.get_game_by_session(),
-            xo_element = Session.get("this_player_xo_element");
-        
-        TA.functions.assert_player_move(game_data, e.target.id, xo_element);
+        TA.functions.assert_player_move(game_data, e.target.id, this_player_xo_element);
     }
 });

@@ -8,11 +8,7 @@ Router.configure({
         return function() {
             return ! Meteor.loggingIn();
         }
-    },
-    onBeforeaction : function() {
-        TA.functions.reset_game_session_state();
-    },
-
+    }
 });
 
 // https://github.com/EventedMind/iron-router/blob/dev/README.md#controlling-subscriptions 
