@@ -5,7 +5,7 @@ var email_input_id = "landing-input-email",
 
 function preprocessRegisterLoginIntent() {
     var email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        email = $.trim($("#"+email_input_id).val()),
+        email = ($.trim($("#"+email_input_id).val())).toLowerCase(),
         pwd = $.trim($("#"+pwd_input_id).val()),
         valid_email = email_regex.test(email),
         valid_pwd = (pwd != ""),
@@ -55,7 +55,6 @@ function preprocessRegisterLoginIntent() {
 
 function processRegisterIntent(email, pwd) {
     Accounts.createUser({
-        username : chance.guid(),
         email : email,
         password : pwd,
         profile : {}
@@ -86,8 +85,7 @@ function processRegisterIntent(email, pwd) {
 
         // successfull registration
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.get_current_user_email().toLowerCase();
-        Router.go("/"+user);
+        Router.go("/");
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
@@ -121,8 +119,7 @@ function processLoginIntent(email, pwd) {
 
         // successfull login
         $("#landing-content").css({ opacity: 0 });
-        var user = TA.functions.get_current_user_email().toLowerCase();
-        Router.go("/"+user);
+        Router.go("/");
         setTimeout(function() {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);

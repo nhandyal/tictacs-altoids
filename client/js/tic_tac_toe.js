@@ -6,17 +6,43 @@
  * Project: TicTacs & Altoids
  * Description: Client controller code.
  */
+var game_data = null,
+    spectating = true,
+    this_player_xo_element = "",
+    check_and_assign_opponent = function(user) {
+        if(game_data.player_data.O.id == "" && game_data.player_data.X.id != user._id) {
+            game_data.player_data.O.id = user._id;
+            game_data.player_data.O.email = user.emails[0].address;
+            game_data.state = "active";
+
+            Games.update({_id : game_data._id}, game_data);
+        }
+    },
+    this_player_turn = function() {
+        if(game_data.current_player.toUpperCase() == this_player_xo_element) {
+            return true;
+        }
+    }
+
 Template.parent_game_grid.game_data = function() {
-    var user = TA.functions.ensure_user_login(),
-        username = user.username,
-        this_player_xo_element = "";
+    var user = Meteor.user();
+    
+    game_data = TA.functions.get_game_by_session();
+    spectating = true;
 
-    var game_data = TA.functions.get_game_by_session(),
-        this_game_player_data = game_data.player_data;
+    if(user) {
+        spectating = false;
+        
+        // check if this game has an oponent
+        // if it doesn't set this player to be O
+        check_and_assign_opponent(user);
 
-    this_player_xo_element = game_data.player_data[username].xo_element;
-    Session.set("this_player_xo_element", this_player_xo_element);
-    Session.set("this_game_player_data", this_game_player_data);
+        if(game_data.player_data.X.id == user._id) {
+            this_player_xo_element =  "X"
+        }else if(game_data.player_data.O.id == user._id) {
+            this_player_xo_element =  "O"
+        }
+    }
 
     return game_data;
 };
@@ -29,58 +55,64 @@ Template.parent_game_grid.helpers({
 
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "XP";
+            return "XP full-opacity";
         }else if(xo_element == "O") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "OP";
-        }
-        
-        return "";
+            return "OP full-opacity";
+        } 
     }
 });
 
 Template.child_game_grid.helpers({
-    preview_xo_element : function(element_index) {
+    active : function(element_index) {
+        var active_parent_board = game_data.active_parent_board;
+
+        if(active_parent_board == element_index) {
+            return "active";
+        }else {
+            return "";
+        }
+    },
+
+    preview_xo_element : function(parent_index, element_index) {
+
+        // prevent playing in invalid situations
+        if (game_data.state.toUpperCase() != "ACTIVE" || spectating || !this_player_turn()) {
+            return "";
+        }
+
         var parent_index = this.index,
             target_id = parent_index + '' + element_index + 'C',
-            xo_element = this.child_board[element_index];
+            xo_element = this.child_board[element_index],
+            active_parent_board = game_data.active_parent_board;
+
+        // prevent playing if parent board isn't active
+        if(active_parent_board != -1 && active_parent_board != parent_index) {
+            return "";
+        }
 
         if(xo_element == "-") {
-            return "valid-xo-move preview-"+ Session.get("this_player_xo_element");
+            return "valid-xo-move preview-" + this_player_xo_element;
         }else {
             return "";
         }
     },
 
     render_xo_element : function(element_index) {
-        
         var parent_index = this.index,
             target_id = parent_index + '' + element_index + 'C',
             xo_element = this.child_board[element_index];
 
         xo_element = xo_element.toUpperCase();
         if(xo_element == "X") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "XC";
+            return "XC full-opacity";
         }else if(xo_element == "O") {
-            TA.data.xo_targets_to_show.push(target_id);
-            setTimeout(TA.functions.process_xo_elements, 0);
-            return "OC";
+            return "OC full-opacity";
         }
-        
-        return "";
     }
 });
 
 Template.child_game_grid.events({
     'click .valid-xo-move' : function(e) {
-        var game_data = TA.functions.get_game_by_session(),
-            xo_element = Session.get("this_player_xo_element");
-        
-        TA.functions.assert_player_move(game_data, e.target.id, xo_element);
+        TA.functions.assert_player_move(game_data, e.target.id, this_player_xo_element);
     }
 });

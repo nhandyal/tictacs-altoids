@@ -11,3 +11,8 @@ window.addEventListener('popstate', function(event) {
 
 on login, hide landing-content (via javascript)
 then after 2seconds, animate opacity to 1 (0.5s) and remove class hide
+
+notifications in meteor:
+	http://stackoverflow.com/questions/15981922/push-notifications-to-the-user-in-meteor
+
+

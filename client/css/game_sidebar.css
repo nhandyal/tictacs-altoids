@@ -1,3 +1,37 @@
-#main-welcome {
-    text-align: right;
+#game-sidebar-game-stats {
+	margin-top: 5px;
+}
+
+#game-state {
+	display: inline-block;
+	width: 54%;
+	font-size: 14px;
+	line-height: 40px;
+	overflow: hidden;
+	border-right: 1px solid;
+	border-color: #D1A644;
+	text-align: center;
+}
+
+#player-data-container {
+	display: inline-block;
+	width: 44%;
+	height: 40px;
+	overflow: hidden;
+}
+
+#player-data-container .player-data-element {
+	display: inline-block;
+}
+
+#player-data-container .player-email {
+	text-align: right;
+	width: 70%;
+	margin-right: 5px;
+	min-height: 1px;
+	overflow: hidden;
+}
+
+#player-data-container .player-xo-element {
+	overflow: hidden;
 }

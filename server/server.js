@@ -1,5 +1,3 @@
-Meteor.startup(function () {
-	Accounts.config({
-        loginExpirationInDays : null
-    });
+Meteor.publish('games', function() {
+	return Games.find();
 });

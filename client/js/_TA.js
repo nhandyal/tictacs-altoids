@@ -13,131 +13,105 @@
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 0
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 1
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 2
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 3
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 4
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 5
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 6
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 7
                     },
                     {
                         child_board : ['-','-','-','-','-','-','-','-','-'],
                         won : '-',
+                        available_spaces : 9,
                         index : 8
                     }
                 ],
+
                 game_moves : [],
+                current_player : "X",
+                active_parent_board : -1,
                 
-                // on create player data is keyed generically with 0 and 1
-                // after a player is assigned to the game, replace the key
-                // with the users session key.
                 player_data : {
-                    0 : {
-                        xo_element : '-',
+                    X : {
+                        id : "",
                         email : ""
                     },
-                    1 : {
-                        xo_element : '-',
+                    O : {
+                        id : "",
                         email : ""
                     }
-                }
+                },
+
+                /*
+                 * Possible game states are
+                 *      new         -- really just a placeholder
+                 *      waiting     -- while one oponent is waiting for another to connect
+                 *      active      -- while the game is baing played
+                 *      finished    -- after the game has been finished
+                 */
+                state : "new"
             };
 
             return game_board;
-        },
-
-        xo_targets_to_show : []
+        }
     };
 
     TA["functions"] = {
-
-        ensure_user_login : function() {
-            var user = Meteor.user();
-            if(!user) {
-                debugger;
-                console.log("No logged in user.");
-                TA.functions.logout();
-                return;
-            }
-
-            return user;
-        },
-
-        rekey_player_data : function(game_data, generic_key, email, xo_element) {
-            var user = TA.functions.ensure_user_login();
-            delete game_data.player_data[generic_key];
-            game_data.player_data[user.username] = {
-                xo_element : xo_element,
-                email : email
-            };
-        },
-
         create_new_game_and_push_history : function() {            
-            var user = TA.functions.ensure_user_login(),
-                email = user.emails[0].address,
+            var user = Meteor.user(),
                 new_game_data = new TA.data.game_data(),
-                game_id = "",
-                target_url = "";
+                game_id = "";
 
             // the player to create the game is X, the next player to join is O
-            TA.functions.rekey_player_data(new_game_data, 0, email, 'X');
+            new_game_data.player_data.X.id = user._id;
+            new_game_data.player_data.X.email = user.emails[0].address;
+            new_game_data.state = "waiting";
+            
             game_id = Games.insert(new_game_data);
-            target_url = "/game/" + game_id;
-            Router.go(target_url);
+            
+            Router.go("/game/" + game_id);
         },
 
-        process_xo_elements : function() {
-            var xo_targets_to_show = TA.data.xo_targets_to_show;
-            for(var i = 0; i < xo_targets_to_show.length; i++) {
-                var xo_element_id = xo_targets_to_show.splice(0, 1);
-                $("#"+xo_element_id+" > .XO-container").addClass("full-opacity");
-            }
-        },
-
-        check_localStorage_for : function(key) {
-            var storage_value = localStorage.getItem(key);
-            if(storage_value !== null) {
-                Session.set(key, storage_value);
-            }
-            return storage_value;
-        },
-
-        set_localStorage : function(key, value) {
-            localStorage.setItem(key, value);
-            Session.set(key, value);
-        },
-
-        get_current_user_email : function() {
+        get_current_username : function() {
             var user = Meteor.user(),
                 user_email = "";
 
@@ -155,8 +129,7 @@
 
             if(!game_data) {
                 console.log("undefined game");
-                Router.go("/");
-                return;
+                return {};
             }
 
             return game_data;
@@ -167,11 +140,6 @@
             Session.set("landing_login_register_intent", undefined);
             Session.set("username", undefined);
             Router.go("/");
-        },
-
-        reset_game_session_state : function() {
-            Session.set("this_player_xo_element", undefined);
-            Session.set("this_game_player_data", undefined);
         },
 
         assert_player_move : function(game_data, targetid, target_xo_element) {
@@ -186,14 +154,19 @@
             var targetid_int = parseInt(targetid.replace("C", "")),
                 parent_index = Math.floor(targetid_int / 10),
                 child_index = targetid_int % 10,
-                target_xo_element = target_xo_element.toUpperCase();
+                target_xo_element = target_xo_element.toUpperCase(),
+                next_player = target_xo_element == 'X' ? 'O' : 'X',
+                fated_parent_index = child_index;
 
             game_data.parent_board[parent_index].child_board[child_index] = target_xo_element;
-            $("#"+targetid).removeClass("preview-"+target_xo_element).removeClass("valid-move");
-
+            game_data.parent_board[parent_index].available_spaces = game_data.parent_board[parent_index].available_spaces - 1;
+            game_data.game_moves.push(targetid+target_xo_element);
+            game_data.current_player = next_player;
+            game_data.active_parent_board = game_data.parent_board[fated_parent_index].available_spaces == 0 ? -1 : fated_parent_index;
 
             var game_win = TA.functions._check_win(game_data);
             if(game_win) {
+                game_data.state = "finished";
                 alert(game_win + "Won the game");
             }
             console.log(game_data);
