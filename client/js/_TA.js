@@ -6,6 +6,70 @@
 
     var TA = {};
 
+    var _check_win = function(game_data, p_index, c_index, xo) {
+            /**
+             * Checks the game state for a win. Updates the game_data var
+             * in place to reflect any wins. Returns true iff there is a
+             * win on the parent board.
+             */
+            var n = 3;
+            xo = xo.toUpperCase();
+
+            // check the child board for a win
+            var child_board = game_data.parent_board[p_index].child_board,
+                child_x = c_index % n;
+                child_y = Math.floor(c_index / n);
+                child_win = _check_win_on_array(child_x, child_y, n, child_board, xo);
+
+            if(!child_win) {
+                return false;
+            }
+            game_data.parent_board[p_index].won = xo;
+
+            // check the parent board for a win
+            // we need to generate a backing array from the data store
+            var parent_board = [],
+                parent_x = p_index % n,
+                parent_y = Math.floor(p_index / n);
+
+            for(var i = 0; i < 9; i++) {
+                parent_board.push(game_data.parent_board[i].won);
+            }
+
+            var parent_win = _check_win_on_array(parent_x, parent_y, n, parent_board, xo);
+
+            if(!parent_win) {
+                return false;
+            }
+            game_data.won = xo;
+
+            return true;
+        },
+
+        _check_win_on_array = function(x, y, n, backing_array, xo) {
+            // the algorithm we are using to determine a win
+            // assumes data is addressable in a (x,y) format.
+            // Our data store records the data in an array.
+            // The following returns the element stored in the
+            // data store given an XY coord.
+            var getViaXY = function(x, y) {
+                    var i = x + (y * n);
+                    return backing_array[i].toUpperCase();
+                };
+
+                coll = row = diag = rdiag = 0;
+
+            xo = xo.toUpperCase();
+            for(var i = 0; i < n; i ++) {
+                coll += (getViaXY(x, i) == xo) ? 1 : 0;
+                row += (getViaXY(i, y) == xo) ? 1 : 0;
+                diag += (getViaXY(i, i) == xo) ? 1 : 0;
+                rdiag += (getViaXY(n-(i+1), i) == xo) ? 1 : 0;
+            }
+            return (coll == n || row == n || diag == n || rdiag == n) ? xo : null;
+        };
+
+    
     TA["data"] = {
         game_data : function() {
             var game_board = {
@@ -65,6 +129,7 @@
                         index : 8
                     }
                 ],
+                won : '-',
 
                 game_moves : [],
                 current_player : "X",
@@ -152,19 +217,19 @@
             // rendering code).
 
             var targetid_int = parseInt(targetid.replace("C", "")),
-                parent_index = Math.floor(targetid_int / 10),
-                child_index = targetid_int % 10,
+                target_parent_index = Math.floor(targetid_int / 10),
+                target_child_index = targetid_int % 10,
                 target_xo_element = target_xo_element.toUpperCase(),
                 next_player = target_xo_element == 'X' ? 'O' : 'X',
-                fated_parent_index = child_index;
+                fated_parent_index = target_child_index;
 
-            game_data.parent_board[parent_index].child_board[child_index] = target_xo_element;
-            game_data.parent_board[parent_index].available_spaces = game_data.parent_board[parent_index].available_spaces - 1;
+            game_data.parent_board[target_parent_index].child_board[target_child_index] = target_xo_element;
+            game_data.parent_board[target_parent_index].available_spaces = game_data.parent_board[target_parent_index].available_spaces - 1;
             game_data.game_moves.push(targetid+target_xo_element);
             game_data.current_player = next_player;
             game_data.active_parent_board = game_data.parent_board[fated_parent_index].available_spaces == 0 ? -1 : fated_parent_index;
 
-            var game_win = TA.functions._check_win(game_data);
+            var game_win = _check_win(game_data, target_parent_index, target_child_index, target_xo_element);
             if(game_win) {
                 game_data.state = "finished";
                 alert(game_win + "Won the game");
@@ -173,80 +238,7 @@
             Games.update({_id : Session.get("game_id")}, game_data);
         },
 
-        _check_win : function(game_data) {
-            
-            // brute force check child boards
-            for(var i = 0; i < 9; i++) {
-                var child_board = game_data.parent_board[i].child_board;
-                if(child_board.won == "X" || child_board.won == "O") {
-                    continue;
-                }
-
-                var v0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[3], child_board[6]),
-                    v1 = TA.functions._compare_three_xo_elements(child_board[1], child_board[4], child_board[7]),
-                    v2 = TA.functions._compare_three_xo_elements(child_board[2], child_board[5], child_board[8]),
-                    h0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[1], child_board[2]),
-                    h1 = TA.functions._compare_three_xo_elements(child_board[3], child_board[4], child_board[5]),
-                    h2 = TA.functions._compare_three_xo_elements(child_board[6], child_board[7], child_board[8]),
-                    d0 = TA.functions._compare_three_xo_elements(child_board[0], child_board[4], child_board[8]),
-                    d1 = TA.functions._compare_three_xo_elements(child_board[2], child_board[4], child_board[6]),
-                    board_win = v0+v1+v2+h0+h1+h2+d0+d1;
-
-                if(board_win == 1) {
-                    var winning_xo_element = "";
-                    if(v1 || h1 || d0 || d1) {
-                        winning_xo_element = child_board[4];
-                    }else if(v0 || h0) {
-                        winning_xo_element = child_board[0];
-                    }else if(v2 || h2) {
-                        winning_xo_element = child_board[8];
-                    }else {
-                        console.log("unknown board_win == 1");
-                        continue;
-                    }
-
-                    game_data.parent_board[i].won = winning_xo_element.toUpperCase();
-                }else if(board_win > 1) {
-                    console.log("unknown board_win > 1");
-                }
-            }
-
-            // brute force check parent board
-            var v0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[3].won, game_data.parent_board[6].won),
-                v1 = TA.functions._compare_three_xo_elements(game_data.parent_board[1].won, game_data.parent_board[4].won, game_data.parent_board[7].won),
-                v2 = TA.functions._compare_three_xo_elements(game_data.parent_board[2].won, game_data.parent_board[5].won, game_data.parent_board[8].won),
-                h0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[1].won, game_data.parent_board[2].won),
-                h1 = TA.functions._compare_three_xo_elements(game_data.parent_board[3].won, game_data.parent_board[4].won, game_data.parent_board[5].won),
-                h2 = TA.functions._compare_three_xo_elements(game_data.parent_board[6].won, game_data.parent_board[7].won, game_data.parent_board[8].won),
-                d0 = TA.functions._compare_three_xo_elements(game_data.parent_board[0].won, game_data.parent_board[4].won, game_data.parent_board[8].won),
-                d1 = TA.functions._compare_three_xo_elements(game_data.parent_board[2].won, game_data.parent_board[4].won, game_data.parent_board[6].won),
-                board_win = v0+v1+v2+h0+h1+h2+d0+d1;
-
-            var winning_xo_element = "";
-            if(board_win == 1) {
-                if(v1 || h1 || d0 || d1) {
-                    winning_xo_element = game_data.parent_board[4].won;
-                }else if(v0 || h0) {
-                    winning_xo_element = game_data.parent_board[0].won;
-                }else if(v2 || h2) {
-                    winning_xo_element = game_data.parent_board[8].won;
-                }else {
-                    console.log("unknown parent board_win == 1");
-                    return null;
-                }
-            }else if(board_win > 1) {
-                console.log("unknown parent board_win > 1");
-                return null;
-            }
-
-            return winning_xo_element.toUpperCase();
-        },
-
-        _compare_three_xo_elements : function(e1, e2, e3) {
-            var equalsX = e1 == "X" && e2 == "X" && e3 == "X",
-                equalsO = e1 == "O" && e2 == "O" && e3 == "O";
-            return equalsX || equalsO;
-        }
+        
     };
     
     window["TA"] = TA;
