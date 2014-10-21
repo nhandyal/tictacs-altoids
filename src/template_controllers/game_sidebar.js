@@ -1,5 +1,6 @@
 function get_stripped_email(player_data, player_key) {
-    return player_data[player_key].email = player_data[player_key].email.substring(0, player_data[player_key].email.indexOf('@')).toLowerCase();
+    player_data[player_key].email = player_data[player_key].email.substring(0, player_data[player_key].email.indexOf('@')).toLowerCase();
+    return player_data[player_key].email;
 }
 
 Template.game_stats_template.game_stats = function() {
@@ -21,20 +22,20 @@ Template.game_stats_template.game_stats = function() {
 
     switch(game_state) {
         case "WAITING":
-            return_obbject["game_state"] = "Waiting for opponent";
+            return_obbject.game_state = "Waiting for opponent";
             break;
         case "ACTIVE":
             var current_player = game_data.current_player.toUpperCase(),
                 player_name = current_player == "X" ? player_data.X.email : player_data.O.email;
 
-            return_obbject["game_state"] = player_name + "'s turn";
+            return_obbject.game_state = player_name + "'s turn";
             break;
         case "FINISHED":
-            return_obbject["game_state"] = "winner";
+            return_obbject.game_state = "winner";
             break;
     }
 
-    return_obbject["player_data"] = player_data;
+    return_obbject.player_data = player_data;
 
     return return_obbject;
-}
+};

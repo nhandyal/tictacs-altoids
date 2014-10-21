@@ -1,0 +1,30 @@
+{
+  "name": "TicTacs-and-Altoids",
+  "version": "0.0.0",
+  "description": "TicTacs & Altoids javascript site controller",
+  "homepage": "www.tictacsandaltoids.com",
+  "bugs": "https://github.com/nhandyal/tictacs-altoids/issues",
+  "main": "app/client/_TA.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nhandyal/tictacs-altoids.git"
+  },
+  "author": {
+    "name": "Nikhil Handyal",
+    "email": "nhandyal@gmail.com",
+    "url": "nikhilhandyal.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-jsbeautifier": "~0.1.8",
+    "matchdep": "^0.3.0"
+  }
+}

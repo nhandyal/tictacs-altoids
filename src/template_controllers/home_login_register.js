@@ -8,7 +8,7 @@ function preprocessRegisterLoginIntent() {
         email = ($.trim($("#"+email_input_id).val())).toLowerCase(),
         pwd = $.trim($("#"+pwd_input_id).val()),
         valid_email = email_regex.test(email),
-        valid_pwd = (pwd != ""),
+        valid_pwd = (pwd !== ""),
         intent = $.trim($("#landing-login-register-submit").html()).toLowerCase();
 
     if(!valid_email) {
@@ -50,7 +50,7 @@ function preprocessRegisterLoginIntent() {
     }else {
         console.log("unknown intent");
     }
-};
+}
 
 
 function processRegisterIntent(email, pwd) {
@@ -90,7 +90,7 @@ function processRegisterIntent(email, pwd) {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
     });
-};
+}
 
 
 function processLoginIntent(email, pwd) {
@@ -124,7 +124,7 @@ function processLoginIntent(email, pwd) {
             $("#landing-content").fadeTo(250, 1);
         }, 1000);
     });
-};
+}
 
 
 Template.home_login_register.helpers({
@@ -143,7 +143,7 @@ Template.home_login_register.helpers({
             autocomplete : "off",
             required : "required",
             style : "margin-right: 10px;"
-        }
+        };
     },
 
     pwd_input_attributes : function() {
@@ -155,7 +155,7 @@ Template.home_login_register.helpers({
             type : "password",
             autocomplete : "off",
             required : "required"
-        }
+        };
     },
 
     login_register_intent : function() {

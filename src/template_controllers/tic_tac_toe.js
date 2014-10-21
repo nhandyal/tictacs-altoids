@@ -12,7 +12,7 @@ var game_data = null,
     prior_parent_board_array = null,
 
     check_and_assign_opponent = function(user) {
-        if(game_data.player_data.O.id == "" && game_data.player_data.X.id != user._id) {
+        if(game_data.player_data.O.id === "" && game_data.player_data.X.id != user._id) {
             game_data.player_data.O.id = user._id;
             game_data.player_data.O.email = user.emails[0].address;
             game_data.state = "active";
@@ -39,11 +39,11 @@ var game_data = null,
 
             return TA.notifications.notify_tada();
         }
-    }
+    };
 
 Template.game.rendered = function() {
     TA.notifications.enable_sounds();
-}
+};
 
 Template.parent_game_grid.game_data = function() {
     var user = Meteor.user();
@@ -59,9 +59,9 @@ Template.parent_game_grid.game_data = function() {
         check_and_assign_opponent(user);
 
         if(game_data.player_data.X.id == user._id) {
-            this_player_xo_element =  "X"
+            this_player_xo_element =  "X";
         }else if(game_data.player_data.O.id == user._id) {
-            this_player_xo_element =  "O"
+            this_player_xo_element =  "O";
         }
 
         if(!prior_parent_board_array) {
@@ -99,7 +99,7 @@ Template.child_game_grid.helpers({
         }
     },
 
-    preview_xo_element : function(parent_index, element_index) {
+    preview_xo_element : function(element_index) {
 
         // prevent playing in invalid situations
         if (spectating || !this_player_turn()) {
