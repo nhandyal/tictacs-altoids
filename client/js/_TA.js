@@ -5,7 +5,11 @@
  (function(){
 
     var TA = {},
-        use_notif_sounds = false,
+        
+        mouse_position = null,
+        user_inactive_count = 0,
+        user_inactive_interval_handle = null,
+        user_inactive_notification_seen = true,
 
         _check_win = function(game_data, p_index, c_index, xo) {
             /**
@@ -62,7 +66,11 @@
                 rdiag += (getViaXY(n-(i+1), i) == xo) ? 1 : 0;
             }
             return (coll == n || row == n || diag == n || rdiag == n) ? xo : null;
-        };
+        },
+
+        _update_user_inactive_state = function() {
+
+        }
 
     
     TA["data"] = {
@@ -157,27 +165,6 @@
     };
 
     TA["functions"] = {
-        enable_notif_sounds : function() {
-            use_notif_sounds = true;
-        },
-
-        disable_notif_sounds : function() {
-            use_notif_sounds = false;
-        },
-
-        notify_tada : function() {
-            if(use_notif_sounds) {
-                $("#notif-tada")[0].play();
-            }
-            mute_tada = false;
-        },
-
-        notify_wow : function() {
-            if(use_notif_sounds) {
-                $("#notif-wow")[0].play();
-            }
-        },
-
         create_new_game_and_push_history : function() {            
             var user = Meteor.user(),
                 new_game_data = new TA.data.game_data(),
@@ -220,19 +207,10 @@
         logout : function() {
             Meteor.logout();
             Session.set("landing_login_register_intent", undefined);
-            Session.set("username", undefined);
             Router.go("/");
         },
 
         assert_player_move : function(game_data, targetid, target_xo_element) {
-            // we are making the assumption that the target
-            // doesn't have an element in it. This is being
-            // asserted upstream in the rendering phase. 
-            // Later we will have to refactor to enforce move
-            // validity in this function so we can "prevent"
-            // rogue clients (or more realistically, shitty ui
-            // rendering code).
-
             var targetid_int = parseInt(targetid.replace("C", "")),
                 target_parent_index = Math.floor(targetid_int / 10),
                 target_child_index = targetid_int % 10,
@@ -253,10 +231,34 @@
             }
             console.log(game_data);
             Games.update({_id : Session.get("game_id")}, game_data);
+        }
+    };
+
+    TA["notifications"] = {
+        
+        use_sounds : false,
+
+        enable_sounds : function() {
+            this.use_sounds = true;
         },
 
-        
-    };
+        disable_sounds : function() {
+            this.use_sounds = false;
+        },
+
+        notify_tada : function() {
+            if(this.use_sounds) {
+                $("#notif-tada")[0].play();
+            }
+            mute_tada = false;
+        },
+
+        notify_wow : function() {
+            if(this.use_sounds) {
+                $("#notif-wow")[0].play();
+            }
+        },
+    }
     
     window["TA"] = TA;
 

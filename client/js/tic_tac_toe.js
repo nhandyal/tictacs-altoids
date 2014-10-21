@@ -32,17 +32,17 @@ var game_data = null,
             for(var i = 0; i < 9; i++) {
                 if(prior_parent_board_array[i] != game_data.parent_board_array[i]) {
                     prior_parent_board_array = game_data.parent_board_array;
-                    return TA.functions.notify_wow();
+                    return TA.notifications.notify_wow();
                 }
             }
             prior_parent_board_array = game_data.parent_board_array;
 
-            return TA.functions.notify_tada();
+            return TA.notifications.notify_tada();
         }
     }
 
 Template.game.rendered = function() {
-    TA.functions.enable_notif_sounds();
+    TA.notifications.enable_sounds();
 }
 
 Template.parent_game_grid.game_data = function() {
