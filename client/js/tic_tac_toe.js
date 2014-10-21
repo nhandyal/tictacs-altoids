@@ -9,6 +9,8 @@
 var game_data = null,
     spectating = true,
     this_player_xo_element = "",
+    prior_parent_board_array = null,
+
     check_and_assign_opponent = function(user) {
         if(game_data.player_data.O.id == "" && game_data.player_data.X.id != user._id) {
             game_data.player_data.O.id = user._id;
@@ -18,11 +20,30 @@ var game_data = null,
             Games.update({_id : game_data._id}, game_data);
         }
     },
+
     this_player_turn = function() {
-        if(game_data.current_player.toUpperCase() == this_player_xo_element) {
+        if(game_data.current_player.toUpperCase() == this_player_xo_element && game_data.state.toUpperCase() == "ACTIVE") {
             return true;
         }
+    },
+
+    alert_win_or_turn = function() {
+        if(this_player_turn()) {
+            for(var i = 0; i < 9; i++) {
+                if(prior_parent_board_array[i] != game_data.parent_board_array[i]) {
+                    prior_parent_board_array = game_data.parent_board_array;
+                    return TA.functions.notify_wow();
+                }
+            }
+            prior_parent_board_array = game_data.parent_board_array;
+
+            return TA.functions.notify_tada();
+        }
     }
+
+Template.game.rendered = function() {
+    TA.functions.enable_notif_sounds();
+}
 
 Template.parent_game_grid.game_data = function() {
     var user = Meteor.user();
@@ -42,8 +63,13 @@ Template.parent_game_grid.game_data = function() {
         }else if(game_data.player_data.O.id == user._id) {
             this_player_xo_element =  "O"
         }
-    }
 
+        if(!prior_parent_board_array) {
+            prior_parent_board_array = game_data.parent_board_array;
+        }
+
+        alert_win_or_turn();
+    }
     return game_data;
 };
 
@@ -76,7 +102,7 @@ Template.child_game_grid.helpers({
     preview_xo_element : function(parent_index, element_index) {
 
         // prevent playing in invalid situations
-        if (game_data.state.toUpperCase() != "ACTIVE" || spectating || !this_player_turn()) {
+        if (spectating || !this_player_turn()) {
             return "";
         }
 

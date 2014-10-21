@@ -4,9 +4,10 @@
 
  (function(){
 
-    var TA = {};
+    var TA = {},
+        use_notif_sounds = false,
 
-    var _check_win = function(game_data, p_index, c_index, xo) {
+        _check_win = function(game_data, p_index, c_index, xo) {
             /**
              * Checks the game state for a win. Updates the game_data var
              * in place to reflect any wins. Returns true iff there is a
@@ -16,27 +17,25 @@
             xo = xo.toUpperCase();
 
             // check the child board for a win
-            var child_board = game_data.parent_board[p_index].child_board,
-                child_x = c_index % n;
+            var child_x = c_index % n;
                 child_y = Math.floor(c_index / n);
-                child_win = _check_win_on_array(child_x, child_y, n, child_board, xo);
+
+            if(game_data.parent_board[p_index].won != "-") {
+                return false;
+            }
+            var child_win = _check_win_on_array(child_x, child_y, n, game_data.parent_board[p_index].child_board, xo);
 
             if(!child_win) {
                 return false;
             }
             game_data.parent_board[p_index].won = xo;
+            game_data.parent_board_array[p_index] = xo;
 
             // check the parent board for a win
-            // we need to generate a backing array from the data store
-            var parent_board = [],
-                parent_x = p_index % n,
+            var parent_x = p_index % n,
                 parent_y = Math.floor(p_index / n);
 
-            for(var i = 0; i < 9; i++) {
-                parent_board.push(game_data.parent_board[i].won);
-            }
-
-            var parent_win = _check_win_on_array(parent_x, parent_y, n, parent_board, xo);
+            var parent_win = _check_win_on_array(parent_x, parent_y, n, game_data.parent_board_array, xo);
 
             if(!parent_win) {
                 return false;
@@ -47,11 +46,7 @@
         },
 
         _check_win_on_array = function(x, y, n, backing_array, xo) {
-            // the algorithm we are using to determine a win
-            // assumes data is addressable in a (x,y) format.
-            // Our data store records the data in an array.
-            // The following returns the element stored in the
-            // data store given an XY coord.
+            // convert an (x,y) coord to array index
             var getViaXY = function(x, y) {
                     var i = x + (y * n);
                     return backing_array[i].toUpperCase();
@@ -129,6 +124,7 @@
                         index : 8
                     }
                 ],
+                parent_board_array : ['-','-','-','-','-','-','-','-','-'],
                 won : '-',
 
                 game_moves : [],
@@ -161,6 +157,27 @@
     };
 
     TA["functions"] = {
+        enable_notif_sounds : function() {
+            use_notif_sounds = true;
+        },
+
+        disable_notif_sounds : function() {
+            use_notif_sounds = false;
+        },
+
+        notify_tada : function() {
+            if(use_notif_sounds) {
+                $("#notif-tada")[0].play();
+            }
+            mute_tada = false;
+        },
+
+        notify_wow : function() {
+            if(use_notif_sounds) {
+                $("#notif-wow")[0].play();
+            }
+        },
+
         create_new_game_and_push_history : function() {            
             var user = Meteor.user(),
                 new_game_data = new TA.data.game_data(),
